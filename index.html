@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<head>
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
+    .input {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    #search {
+      width: 200px;
+      font-size: larger;
+    }
+
+    @media only screen and (max-width: 600px) {
+      #search {
+        font-size: xx-large;
+      }
+    }
+
+    .frame {
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    #img {
+      display: none;
+    }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search id</title>
+</head>
+
+<body id="body" style="background-image: url('background.jpg')">
+  <div class="input">
+    <select name="type" id="type">
+      <option value="png">png</option>
+      <option value="pdf">pdf</option>
+    </select>
+    <input id="search" />
+    <button onclick="find()">Tìm</button>
+  </div>
+  <img id="img" />
+  <iframe class="frame" id="frame"></iframe>
+</body>
+<!-- Đoạn này bắt đầu đồng hồ đếm ngước -->
+
+<style type="text/css">
+  #clockdiv h2 {
+    font-family: "Roboto";
+    font-weight: 100;
+    color: #034688;
+    text-align: center;
+    font-size: 40px;
+    margin: 0 0 16px;
+  }
+  #clockdiv {
+    font-family: sans-serif;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.63);
+    display: inline-block;
+    font-weight: 100;
+    text-align: center;
+    font-size: 30px;
+    margin: 20px auto;
+    padding: 20px;
+    width: 100%;
+  }
+  #clockdiv > div {
+    padding: 10px 35px;
+    border-radius: 3px;
+    background: #034688;
+    display: inline-block;
+  }
+  #clockdiv div > span {
+    padding: 0;
+    border-radius: 3px;
+    font-size: 58px;
+    display: inline-block;
+  }
+  #clockdiv .smalltext {
+    padding-top: 5px;
+    font-size: 16px;
+  }
+</style>
+<style type="text/css">
+  .times {
+    text-transform: none;
+    font-size: 20px;
+    padding-right: 30px;
+  }
+  #times-countdown {
+    background: rgba(255, 255, 255, 0.62);
+    color: white;
+    font-family: Oswald, Arial, Sans-serif;
+    font-size: 250%;
+    text-transform: uppercase;
+    text-align: left;
+    font-weight: normal;
+    padding: 0 0 30px 0;
+    border-radius: 5px;
+  }
+  #demthoigian-share123 {
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+  span#countdown {
+    margin: 10px 10px 20px;
+    border-radius: 9px;
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(1, 49, 97, 0.85);
+    color: white;
+    font-size: 170%;
+    font-weight: 600;
+    font-family: "Nove Cento";
+  }
+  #times-countdown h2 {
+    font-size: 40px;
+    color: #034688;
+    font-weight: 700;
+    text-align: center;
+    padding: 6px;
+    margin: 18px;
+  }
+</style>
+<div id="times-countdown">
+  <h2>KỲ THI THPT QUỐC GIA 2023 CHỈ CÒN</h2>
+  <div id="demthoigian-share123">
+    <span id="countdown" />
+  </div>
+</div>
+<script type="text/javascript">
+  //<![CDATA[
+  // đặt ngày để bắt đầu đếm ngược, ở đây là 28-12-2016
+  var target_date = new Date("July 6, 2023").getTime();
+
+  // thêm biến cho các đơn vị thời gian
+  var days, hours, minutes, seconds;
+
+  //đặt id là countdown
+  var countdown = document.getElementById("countdown");
+
+  // cập nhật id "countdown" mỗi 1 giây
+  setInterval(function () {
+    // thiết lập cho ngày giờ hiện tại và ngày kết thúc
+    var current_date = new Date().getTime();
+    var seconds_left = (target_date - current_date) / 1000;
+
+    // tính ngày, giờ, phút và giây
+    days = parseInt(seconds_left / 86400);
+    seconds_left = seconds_left % 86400;
+
+    hours = parseInt(seconds_left / 3600);
+    seconds_left = seconds_left % 3600;
+
+    minutes = parseInt(seconds_left / 60);
+    seconds = parseInt(seconds_left % 60);
+
+    // thiết lập cho biến countdown hiển thị ra ngoài
+    countdown.innerHTML =
+      days +
+      " <span class='times'>ngày</span> " +
+      hours +
+      " <span class='times'>giờ</span> " +
+      minutes +
+      " <span class='times'>phút</span> " +
+      seconds +
+      " <span class='times'>giây</span>";
+  }, 1000);
+  //]]>
+</script>
+
+<!-- Đoạn này kết thúc đồng hồ đếm ngước -->
+
+<!-- Đoạn này làm tài trợ -->
+<center class="ttweb">
+  <h2>Nếu thấy hữu ích, bạn có thể mời mình 1 cốc cafe. Thanks</h2>
+  <h2>Momo: 0389821.115</h2>
+</center>
+<!--  Kết thúc Đoạn này làm tài trợ -->
+<script>
+  const input = document.getElementById("search");
+  var img = document.getElementById("img");
+  const frame = document.getElementById("frame");
+
+  input.focus();
+  input.addEventListener("keypress", (event) => {
+    if (event.keyCode === 13) {
+      find();
+    }
+  });
+
+  function find() {
+    const val = document.getElementById("search").value;
+    const type = document.getElementById("type").value;
+    const text = val.toString();
+
+    let n = 100;
+    if (type === "png") {
+      frame.style.display = "none";
+
+      for (let i = 1; i <= n; i++) {
+        const showImg = new Image();
+        showImg.src = `http://toanthaysang.github.io/image${i}/${text}.png`;
+        showImg.onload = () => {
+          img.src = `http://toanthaysang.github.io/image${i}/${text}.png`;
+          img.style.width = "100%";
+          img.style.marginTop = "10px";
+          img.style.display = "block";
+        };
+      }
+    } else if (type === "pdf") {
+      img.style.display = "none";
+      const index = text.split("_")[0];
+      frame.src = `./pdf${index}/${text}.pdf`;
+      frame.style.display = "block";
+    }
+  }
+</script>
