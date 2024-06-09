@@ -110,9 +110,9 @@ function hoanViNgoacLonNgauNhien(text) {
     groupNone = groupNone.map(sentence => sentence.replace('choi2ceTF', 'choiceTF'));
 
     return {
-        groupChoice: phanLoaiVaHoanVi(groupChoice),
-        groupChoi2ceTF: phanLoaiVaHoanVi(groupChoi2ceTF),
-        groupNone: phanLoaiVaHoanVi(groupNone),
+        groupChoice: groupChoice.join('\n'),
+        groupChoi2ceTF: groupChoi2ceTF.join('\n'),
+        groupNone: groupNone.join('\n'),
         countChoice: groupChoice.length,
         countChoi2ceTF: groupChoi2ceTF.length,
         countNone: groupNone.length
