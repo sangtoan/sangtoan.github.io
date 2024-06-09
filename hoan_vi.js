@@ -109,7 +109,14 @@ function hoanViNgoacLonNgauNhien(text) {
     groupChoi2ceTF = groupChoi2ceTF.map(sentence => sentence.replace('choi2ceTF', 'choiceTF'));
     groupNone = groupNone.map(sentence => sentence.replace('choi2ceTF', 'choiceTF'));
 
-    return groupChoice.join('\n') + '\n' + groupChoi2ceTF.join('\n') + '\n' + groupNone.join('\n');
+    return {
+        groupChoice: phanLoaiVaHoanVi(groupChoice),
+        groupChoi2ceTF: phanLoaiVaHoanVi(groupChoi2ceTF),
+        groupNone: phanLoaiVaHoanVi(groupNone),
+        countChoice: groupChoice.length,
+        countChoi2ceTF: groupChoi2ceTF.length,
+        countNone: groupNone.length
+    };
 }
 
 function hoanViCauTruc(text) {
@@ -134,7 +141,7 @@ $(document).ready(function () {
                 for (let i = 0; i < numFiles; i++) {
                     let resultContent;
                     if (hoanViType === 'ngoac') {
-                        resultContent = hoanViNgoacLonNgauNhien(content);
+                        resultContent = hoanViNgoacLonNgauNhien(content).groupChoice;
                     } else if (hoanViType === 'cau_truc') {
                         resultContent = hoanViCauTruc(content);
                     }
@@ -160,7 +167,7 @@ $(document).ready(function () {
         for (let i = 0; i < numFiles; i++) {
             let resultContent;
             if (hoanViType === 'ngoac') {
-                resultContent = hoanViNgoacLonNgauNhien(content);
+                resultContent = hoanViNgoacLonNgauNhien(content).groupChoice;
             } else if (hoanViType === 'cau_truc') {
                 resultContent = hoanViCauTruc(content);
             }
