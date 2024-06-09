@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search id</title>
     <style>
-        /* Các kiểu hiện có... */
         html, body {
             width: 100%;
             height: 100%;
@@ -34,7 +33,6 @@
         #img {
             display: none;
         }
-        /* Kiểu cho menu */
         .menu {
             width: 100%;
             background-color: #333;
@@ -56,7 +54,7 @@
 </head>
 <body id="body" style="background-image: url('background.jpg')">
     <div class="menu">
-        <a href="#home">Home</a>
+        <a href="index.html">Home</a>
         <a href="#contact">Contact</a>
         <a href="tron_de.html">Trộn Đề</a>
     </div>
@@ -70,39 +68,30 @@
     </div>
     <img id="img" />
     <iframe class="frame" id="frame"></iframe>
-  
-    <!-- Đoạn đếm ngược và các phần khác hiện có... -->
-  
+
     <script>
-        // JavaScript hiện có...
-        const input = document.getElementById("search");
-        var img = document.getElementById("img");
-        const frame = document.getElementById("frame");
-        
-        input.focus();
-        input.addEventListener("keypress", (event) => {
-            if (event.keyCode === 13) {
-                find();
-            }
-        });
-        
         function find() {
             const val = document.getElementById("search").value;
             const type = document.getElementById("type").value;
             const text = val.toString();
-            
-            let n = 100;
+
+            let n = 55; // số lượng thư mục image
             if (type === "png") {
                 frame.style.display = "none";
-                
+                img.style.display = "none"; // ẩn ảnh trước đó nếu có
+
+                let found = false; // biến kiểm tra xem ảnh có được tìm thấy không
                 for (let i = 1; i <= n; i++) {
                     const showImg = new Image();
-                    showImg.src = `http://toanthaysang.github.io/image${i}/${text}.png`;
+                    showImg.src = `./image${i}/${text}.png`;
                     showImg.onload = () => {
-                        img.src = `http://toanthaysang.github.io/image${i}/${text}.png`;
-                        img.style.width = "100%";
-                        img.style.marginTop = "10px";
-                        img.style.display = "block";
+                        if (!found) { // chỉ hiển thị ảnh đầu tiên tìm thấy
+                            found = true;
+                            img.src = showImg.src;
+                            img.style.width = "100%";
+                            img.style.marginTop = "10px";
+                            img.style.display = "block";
+                        }
                     };
                 }
             } else if (type === "pdf") {
@@ -110,6 +99,16 @@
                 const index = text.split("_")[0];
                 frame.src = `./pdf${index}/${text}.pdf`;
                 frame.style.display = "block";
+            } else if (type === "svg") {
+                img.style.display = "none";
+                const showImg = new Image();
+                showImg.src = `./image/${text}.svg`;
+                showImg.onload = () => {
+                    img.src = `./image/${text}.svg`;
+                    img.style.width = "100%";
+                    img.style.marginTop = "10px";
+                    img.style.display = "block";
+                };
             }
         }
     </script>
