@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Code</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+        .menu {
+            width: 100%;
+            background-color: #007bff; /* Màu xanh lam */
+            overflow: hidden;
+        }
+        .menu a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .menu a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="#contact">Contact</a>
+        <a href="tron_de.html">Trộn Đề</a>
+        <a href="fixcode.html">Fix Code</a>
+    </div>
+    <div class="container">
+        <h1>Fix Code</h1>
+        <div class="form-group mt-3">
+            <label for="inputCode">Dán mã cần sửa:</label>
+            <textarea class="form-control" id="inputCode" rows="10"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="outputCode">Kết quả sau khi sửa:</label>
+            <textarea class="form-control" id="outputCode" rows="10" readonly></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="fixCode()">Fix Code</button>
+        <button class="btn btn-secondary" onclick="applyFindReplace()">Find & Replace</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function fixCode() {
+            let inputCode = document.getElementById('inputCode').value;
+            // Thực hiện các thao tác sửa mã
+            let outputCode = inputCode.replace('\\mathrm{R}', '\\mathbb{R}');
+            // Ví dụ thay thế khác
+            document.getElementById('outputCode').value = outputCode;
+        }
+
+        function applyFindReplace() {
+            let inputCode = document.getElementById('inputCode').value;
+            fetch('replace.json')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(item => {
+                        let findText = item.find;
+                        let replaceText = item.replace;
+                        let regex = new RegExp(findText, 'g');
+                        inputCode = inputCode.replace(regex, replaceText);
+                    });
+                    document.getElementById('outputCode').value = inputCode;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
