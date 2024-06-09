@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search LaTeX Files</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+        .menu {
+            width: 100%;
+            background-color: #007bff; /* Màu xanh lam */
+            overflow: hidden;
+        }
+        .menu a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .menu a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="#contact">Contact</a>
+        <a href="tron_de.html">Trộn Đề</a>
+        <a href="fixcode.html">Fix Code</a>
+        <a href="find_latex.html">Tìm Kiếm</a>
+    </div>
+    <div class="container">
+        <h1>Tìm kiếm tệp LaTeX</h1>
+        <div class="form-group mt-3">
+            <label for="searchKeyword">Nhập từ khóa:</label>
+            <input type="text" class="form-control" id="searchKeyword" placeholder="Nhập từ khóa để tìm tệp LaTeX">
+        </div>
+        <div class="form-group">
+            <label for="similarityLevel">Tuỳ Chọn:</label>
+            <select class="form-control" id="similarityLevel">
+                <option value="exact">Có Phân Biệt A và a</option>
+                <option value="caseInsensitive">Không Phân Biệt A và a</option>
+                <option value="relative">Tìm tương đối</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="searchEnvironment">Môi Trường:</label>
+            <select class="form-control" id="searchEnvironment">
+                <option value="ex">ex</option>
+                <option value="bt">bt</option>
+                <option value="vd">vd</option>
+                <option value="tikzpicture">hình vẽ</option>
+                <option value="dn">dn</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" onclick="searchTexFiles()">Tìm Kiếm</button>
+        <div class="mt-3" id="results"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function searchTexFiles() {
+            const keyword = document.getElementById('searchKeyword').value.toLowerCase();
+            const similarityLevel = document.getElementById('similarityLevel').value;
+            const searchEnvironment = document.getElementById('searchEnvironment').value;
+            const folderPath = 'Kho_Latex';
+            let results = '';
+
+            fetch(`${folderPath}/`)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const links = doc.querySelectorAll('a');
+
+                    links.forEach(link => {
+                        const subFolderName = link.textContent;
+                        if (subFolderName && !subFolderName.includes('.')) {
+                            fetch(`${folderPath}/${subFolderName}/`)
+                                .then(response => response.text())
+                                .then(subFolderHtml => {
+                                    const subFolderDoc = parser.parseFromString(subFolderHtml, 'text/html');
+                                    const subFolderLinks = subFolderDoc.querySelectorAll('a');
+
+                                    subFolderLinks.forEach(subFolderLink => {
+                                        const fileName = subFolderLink.textContent;
+                                        if (fileName.endsWith('.tex')) {
+                                            fetch(`${folderPath}/${subFolderName}/${fileName}`)
+                                                .then(response => response.text())
+                                                .then(fileContent => {
+                                                    if (matchesCriteria(fileContent, keyword, similarityLevel, searchEnvironment)) {
+                                                        results += `<p><a href="${folderPath}/${subFolderName}/${fileName}" target="_blank">${fileName}</a></p>`;
+                                                    }
+                                                    document.getElementById('results').innerHTML = results || '<p>Không tìm thấy kết quả nào.</p>';
+                                                });
+                                        }
+                                    });
+                                });
+                        }
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function matchesCriteria(content, keyword, similarityLevel, searchEnvironment) {
+            const envPattern = new RegExp(`\\\\begin\\{${searchEnvironment}\\}.*?\\\\end\\{${searchEnvironment}\\}`, 'gs');
+            const matches = content.match(envPattern);
+            if (matches) {
+                for (const match of matches) {
+                    if (similarityLevel === 'exact' && match.includes(keyword)) {
+                        return true;
+                    } else if (similarityLevel === 'caseInsensitive' && match.toLowerCase().includes(keyword.toLowerCase())) {
+                        return true;
+                    } else if (similarityLevel === 'relative' && fuzzySearch(keyword, match)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function fuzzySearch(needle, haystack) {
+            const needleLen = needle.length;
+            const haystackLen = haystack.length;
+            if (needleLen > haystackLen) {
+                return false;
+            }
+            if (needleLen === haystackLen) {
+                return needle === haystack;
+            }
+            outer: for (let i = 0, j = 0; i < needleLen; i++) {
+                const nch = needle.charCodeAt(i);
+                while (j < haystackLen) {
+                    if (haystack.charCodeAt(j++) === nch) {
+                        continue outer;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
