@@ -61,10 +61,13 @@
     <div class="input">
         <select name="type" id="type">
             <option value="png">png</option>
+            <option value="jpg">jpg</option>
+            <option value="svg">svg</option>
             <option value="pdf">pdf</option>
         </select>
         <input id="search" />
         <button onclick="find()">Tìm</button>
+        <button onclick="clearImage()">Xóa ảnh</button>
     </div>
     <img id="img" />
     <iframe class="frame" id="frame"></iframe>
@@ -74,16 +77,16 @@
             const val = document.getElementById("search").value;
             const type = document.getElementById("type").value;
             const text = val.toString();
-
             let n = 55; // số lượng thư mục image
-            if (type === "png") {
+            let found = false; // biến kiểm tra xem ảnh có được tìm thấy không
+
+            if (['png', 'jpg', 'svg'].includes(type)) {
                 frame.style.display = "none";
                 img.style.display = "none"; // ẩn ảnh trước đó nếu có
 
-                let found = false; // biến kiểm tra xem ảnh có được tìm thấy không
                 for (let i = 1; i <= n; i++) {
                     const showImg = new Image();
-                    showImg.src = `./image${i}/${text}.png`;
+                    showImg.src = `./image${i}/${text}.${type}`;
                     showImg.onload = () => {
                         if (!found) { // chỉ hiển thị ảnh đầu tiên tìm thấy
                             found = true;
@@ -99,17 +102,14 @@
                 const index = text.split("_")[0];
                 frame.src = `./pdf${index}/${text}.pdf`;
                 frame.style.display = "block";
-            } else if (type === "svg") {
-                img.style.display = "none";
-                const showImg = new Image();
-                showImg.src = `./image/${text}.svg`;
-                showImg.onload = () => {
-                    img.src = `./image/${text}.svg`;
-                    img.style.width = "100%";
-                    img.style.marginTop = "10px";
-                    img.style.display = "block";
-                };
             }
+        }
+
+        function clearImage() {
+            img.src = "";
+            img.style.display = "none";
+            frame.src = "";
+            frame.style.display = "none";
         }
     </script>
 </body>
