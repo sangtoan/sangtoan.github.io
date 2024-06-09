@@ -75,78 +75,77 @@
             const folderPath = 'Kho_Latex';
             let results = '';
 
-            fetch(`${folderPath}/`)
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const links = doc.querySelectorAll('a');
+            fetchDirectory(folderPath);
 
-                    links.forEach(link => {
-                        const subFolderName = link.textContent;
-                        if (subFolderName && !subFolderName.includes('.')) {
-                            fetch(`${folderPath}/${subFolderName}/`)
-                                .then(response => response.text())
-                                .then(subFolderHtml => {
-                                    const subFolderDoc = parser.parseFromString(subFolderHtml, 'text/html');
-                                    const subFolderLinks = subFolderDoc.querySelectorAll('a');
+            function fetchDirectory(path) {
+                fetch(`${path}/`)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const links = doc.querySelectorAll('a');
 
-                                    subFolderLinks.forEach(subFolderLink => {
-                                        const fileName = subFolderLink.textContent;
-                                        if (fileName.endsWith('.tex')) {
-                                            fetch(`${folderPath}/${subFolderName}/${fileName}`)
-                                                .then(response => response.text())
-                                                .then(fileContent => {
-                                                    if (matchesCriteria(fileContent, keyword, similarityLevel, searchEnvironment)) {
-                                                        results += `<p><a href="${folderPath}/${subFolderName}/${fileName}" target="_blank">${fileName}</a></p>`;
-                                                    }
-                                                    document.getElementById('results').innerHTML = results || '<p>Không tìm thấy kết quả nào.</p>';
-                                                });
-                                        }
-                                    });
-                                });
+                        links.forEach(link => {
+                            const name = link.textContent;
+                            if (name.endsWith('/')) {
+                                fetchDirectory(`${path}/${name}`);
+                            } else if (name.endsWith('.tex')) {
+                                fetchFile(`${path}/${name}`);
+                            }
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            function fetchFile(filePath) {
+                fetch(filePath)
+                    .then(response => response.text())
+                    .then(content => {
+                        if (matchesCriteria(content, keyword, similarityLevel, searchEnvironment)) {
+                            results += `<p><a href="${filePath}" target="_blank">${filePath}</a></p>`;
+                            document.getElementById('results').innerHTML = results || '<p>Không tìm thấy kết quả nào.</p>';
                         }
-                    });
-                })
-                .catch(error => console.error('Error:', error));
-        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
 
-        function matchesCriteria(content, keyword, similarityLevel, searchEnvironment) {
-            const envPattern = new RegExp(`\\\\begin\\{${searchEnvironment}\\}.*?\\\\end\\{${searchEnvironment}\\}`, 'gs');
-            const matches = content.match(envPattern);
-            if (matches) {
-                for (const match of matches) {
-                    if (similarityLevel === 'exact' && match.includes(keyword)) {
-                        return true;
-                    } else if (similarityLevel === 'caseInsensitive' && match.toLowerCase().includes(keyword.toLowerCase())) {
-                        return true;
-                    } else if (similarityLevel === 'relative' && fuzzySearch(keyword, match)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        function fuzzySearch(needle, haystack) {
-            const needleLen = needle.length;
-            const haystackLen = haystack.length;
-            if (needleLen > haystackLen) {
-                return false;
-            }
-            if (needleLen === haystackLen) {
-                return needle === haystack;
-            }
-            outer: for (let i = 0, j = 0; i < needleLen; i++) {
-                const nch = needle.charCodeAt(i);
-                while (j < haystackLen) {
-                    if (haystack.charCodeAt(j++) === nch) {
-                        continue outer;
+            function matchesCriteria(content, keyword, similarityLevel, searchEnvironment) {
+                const envPattern = new RegExp(`\\\\begin\\{${searchEnvironment}\\}.*?\\\\end\\{${searchEnvironment}\\}`, 'gs');
+                const matches = content.match(envPattern);
+                if (matches) {
+                    for (const match of matches) {
+                        if (similarityLevel === 'exact' && match.includes(keyword)) {
+                            return true;
+                        } else if (similarityLevel === 'caseInsensitive' && match.toLowerCase().includes(keyword.toLowerCase())) {
+                            return true;
+                        } else if (similarityLevel === 'relative' && fuzzySearch(keyword, match)) {
+                            return true;
+                        }
                     }
                 }
                 return false;
             }
-            return true;
+
+            function fuzzySearch(needle, haystack) {
+                const needleLen = needle.length;
+                const haystackLen = haystack.length;
+                if (needleLen > haystackLen) {
+                    return false;
+                }
+                if (needleLen === haystackLen) {
+                    return needle === haystack;
+                }
+                outer: for (let i = 0, j = 0; i < needleLen; i++) {
+                    const nch = needle.charCodeAt(i);
+                    while (j < haystackLen) {
+                        if (haystack.charCodeAt(j++) === nch) {
+                            continue outer;
+                        }
+                    }
+                    return false;
+                }
+                return true;
+            }
         }
     </script>
 </body>
