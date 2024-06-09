@@ -27,6 +27,8 @@
             color: black;
         }
     </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <div class="menu">
@@ -102,8 +104,10 @@
                     .then(response => response.text())
                     .then(content => {
                         if (matchesCriteria(content, keyword, similarityLevel, searchEnvironment)) {
-                            results += `<p><a href="${filePath}" target="_blank">${filePath}</a></p>`;
+                            const formattedContent = formatMathJax(content);
+                            results += `<p><a href="${filePath}" target="_blank">${filePath}</a></p><div>${formattedContent}</div>`;
                             document.getElementById('results').innerHTML = results || '<p>Không tìm thấy kết quả nào.</p>';
+                            MathJax.typeset();  // Yêu cầu MathJax xử lý các công thức toán học
                         }
                     })
                     .catch(error => console.error('Error:', error));
@@ -145,6 +149,13 @@
                     return false;
                 }
                 return true;
+            }
+
+            function formatMathJax(content) {
+                const escapedContent = content
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                return `<pre><code>${escapedContent}</code></pre>`;
             }
         }
     </script>
