@@ -1,0 +1,22 @@
+{
+    "nhóm góc": {
+        "gocvecto": {
+            "code": "function gocvecto(a, b, c, d, e, f) {\n    const dot_product = a * d + b * e + c * f;\n    const norm_vector1 = Math.sqrt(a ** 2 + b ** 2 + c ** 2);\n    const norm_vector2 = Math.sqrt(d ** 2 + e ** 2 + f ** 2);\n    const cos_theta = dot_product / (norm_vector1 * norm_vector2);\n    return cos_theta;\n}",
+            "description": "Tính tích vô hướng và độ dài của mỗi vector"
+        },
+        "gocgttd": {
+            "code": "function gocgttd(a, b, c, d, e, f) {\n    const dot_product = Math.abs(a * d + b * e + c * f);\n    const norm_vector1 = Math.sqrt(a ** 2 + b ** 2 + c ** 2);\n    const norm_vector2 = Math.sqrt(d ** 2 + e ** 2 + f ** 2);\n    const cos_theta = dot_product / (norm_vector1 * norm_vector2);\n    return cos_theta;\n}",
+            "description": "Tính tích vô hướng và độ dài tuyệt đối của mỗi vector"
+        }
+    },
+    "nhóm khác": {
+        "ham_so_1": {
+            "code": "function ham_so_1(a, b) {\n    return a + b;\n}",
+            "description": "Hàm số 1"
+        },
+        "ham_so_2": {
+            "code": "function ham_so_2(a, b) {\n    return a * b;\n}",
+            "description": "Hàm số 2"
+        }
+    }
+}
