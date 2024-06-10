@@ -1,12 +1,18 @@
 {
-    "nhóm góc": {
-        "gocvecto": {
-            "code": "function gocvecto(a, b, c, d, e, f) {\n    const dot_product = a * d + b * e + c * f;\n    const norm_vector1 = Math.sqrt(a ** 2 + b ** 2 + c ** 2);\n    const norm_vector2 = Math.sqrt(d ** 2 + e ** 2 + f ** 2);\n    const cos_theta = dot_product / (norm_vector1 * norm_vector2);\n    return cos_theta;\n}",
-            "description": "Tính tích vô hướng và độ dài của mỗi vector"
+    "Nhóm Góc": {
+        "Góc giữa hai vectơ": {
+            "code": "function gocVecto(a, b, c, d, e, f) { const dot_product = a * d + b * e + c * f; const norm_vector1 = Math.sqrt(a ** 2 + b ** 2 + c ** 2); const norm_vector2 = Math.sqrt(d ** 2 + e ** 2 + f ** 2); const cos_theta = dot_product / (norm_vector1 * norm_vector2); return cos_theta; }",
+            "description": "Tính góc giữa hai vectơ."
         },
-        "ham_phan_thuc_hai_tren_mot_dd_cuctri": {
-            "code": "function ham_phan_thuc_hai_tren_mot_dd_cuctri(k) {\n    const [a, b, c, d, e] = ham_phan_thuc_hai_tren_mot();\n    const e_new = e + k;\n    const x1 = -1; // tính toán đơn giản hóa\n    const x2 = 1; // tính toán đơn giản hóa\n    const f_x1 = a * x1 ** 2 + b * x1 + c;\n    const f_x2 = a * x2 ** 2 + b * x2 + c;\n    const decreasing_interval = `${x2}, +∞`;\n    const area_triangle = Math.abs(x1 * f_x2 - x2 * f_x1) / 2;\n    const diem_cd = `${x1}, ${f_x1}`;\n    const diem_ct = `${x2}, ${f_x2}`;\n    const slope = (f_x2 - f_x1) / (x2 - x1);\n    const intercept = f_x1 - slope * x1;\n    const line_eq = `${slope}x + ${intercept}`;\n    const distance_AB = Math.sqrt((x2 - x1) ** 2 + (f_x2 - f_x1) ** 2);\n    const distance_to_line = Math.abs(slope * 1 - 2 + intercept) / Math.sqrt(slope ** 2 + 1);\n    const OA = Math.sqrt(x1 ** 2 + f_x1 ** 2);\n    const OB = Math.sqrt(x2 ** 2 + f_x2 ** 2);\n    const R = (OA * OB * distance_AB) / (4 * area_triangle);\n    const r = area_triangle / ((OA + OB + distance_AB) / 2);\n    const debai = `\\begin{ex} \\text{Cho hàm số } y = f(x) = \\frac{${a}x^2 + ${b}x + ${c}}{${d}x + ${e_new}}, \\text{ xét tính đúng sai của các khẳng định sau} \\n \\choiceTF{ \\True Hàm số đồng biến trong khoảng ${decreasing_interval}, \\True Đồ thị hàm số có điểm cực đại là (${diem_cd}) và điểm cực tiểu là (${diem_ct}), \\True Đường thẳng đi qua hai điểm cực trị là $y = ${line_eq}$, \\True Khoảng cách giữa hai điểm cực trị là ${distance_AB} } \\loigiai{ \\n } \\end{ex}`;\n    return debai;\n}",
-            "description": "Tính các đặc trưng của hàm phân thức hai trên một"
+        "Góc giữa hai vectơ tổng đại số": {
+            "code": "function gocGttd(a, b, c, d, e, f) { const dot_product = Math.abs(a * d + b * e + c * f); const norm_vector1 = Math.sqrt(a ** 2 + b ** 2 + c ** 2); const norm_vector2 = Math.sqrt(d ** 2 + e ** 2 + f ** 2); const cos_theta = dot_product / (norm_vector1 * norm_vector2); return cos_theta; }",
+            "description": "Tính góc giữa hai vectơ tổng đại số."
+        }
+    },
+    "Hàm Phân Thức": {
+        "Hàm phân thức hai trên một": {
+            "code": "function hamPhanThucHaiTrenMot() { while (true) { const a = Math.floor(Math.random() * 10) + 1; const c = Math.floor(Math.random() * 21) - 10; const d = Math.floor(Math.random() * 10) + 1; const e = Math.floor(Math.random() * 21) - 10; const discriminantCandidate = Math.floor(Math.random() * 100) + 1; const k = Math.floor(Math.sqrt(discriminantCandidate)); const discriminant = k * k; if (discriminant % 4 !== 0) { continue; } const bSquared = 3 * a * c + Math.floor(discriminant / 4); if (bSquared >= 0 && Math.sqrt(bSquared) % 1 === 0) { const b = Math.sqrt(bSquared); return [a, b, c, d, e]; } } }",
+            "description": "Tạo hệ số ngẫu nhiên cho hàm phân thức hai trên một."
         }
     }
 }
