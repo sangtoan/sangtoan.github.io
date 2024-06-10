@@ -6,21 +6,17 @@
     <title>Vẽ Hình</title>
     <style>
         body {
-            display: flex;
-        }
-        #tree {
-            width: 30%;
-            border-right: 1px solid #ccc;
-            padding-right: 10px;
-        }
-        #content {
-            width: 70%;
-            padding-left: 10px;
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
         .menu {
             width: 100%;
-            background-color: #007bff; /* Màu xanh lam */
+            background-color: #007bff;
             overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
         .menu a {
             float: left;
@@ -34,6 +30,46 @@
             background-color: #ddd;
             color: black;
         }
+        .container {
+            display: flex;
+            margin-top: 50px; /* Adjust this value if needed */
+            height: calc(100vh - 50px);
+        }
+        #tree {
+            width: 30%;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+        }
+        #content {
+            width: 70%;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        li {
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        li > ul {
+            display: none;
+        }
+        li.expanded > ul {
+            display: block;
+        }
+        li:before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 5px;
+        }
+        li.expanded:before {
+            content: '▼';
+        }
+        li:hover {
+            color: #007bff;
+        }
     </style>
 </head>
 <body>
@@ -45,9 +81,11 @@
         <a href="find_latex.html">Tìm Kiếm</a>
         <a href="Ve_hinh.html">Vẽ Hình</a>
     </div>
-    <div id="tree"></div>
-    <div id="content">
-        <pre id="latexContent"></pre>
+    <div class="container">
+        <div id="tree"></div>
+        <div id="content">
+            <pre id="latexContent"></pre>
+        </div>
     </div>
 
     <script>
@@ -68,10 +106,16 @@
                     ul.appendChild(li);
 
                     if (typeof data[key] === 'object') {
+                        li.classList.add('parent');
+                        li.onclick = function(event) {
+                            event.stopPropagation();
+                            this.classList.toggle('expanded');
+                        };
                         buildTree(data[key], li);
                     } else {
                         li.dataset.content = data[key];
-                        li.onclick = function() {
+                        li.onclick = function(event) {
+                            event.stopPropagation();
                             document.getElementById('latexContent').textContent = this.dataset.content;
                         };
                     }
