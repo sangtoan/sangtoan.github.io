@@ -116,10 +116,10 @@
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {
                     const li = document.createElement('li');
-                    li.textContent = key;
+                    li.innerHTML = `<input type="checkbox" id="${key}" name="${key}" value="${key}"> <label for="${key}">${key}</label>`;
                     ul.appendChild(li);
 
-                    if (typeof data[key] === 'object') {
+                    if (typeof data[key] === 'object' && !data[key].code) {
                         li.classList.add('parent');
                         li.onclick = function(event) {
                             event.stopPropagation();
@@ -127,21 +127,20 @@
                         };
                         buildTree(data[key], li);
                     } else {
-                        li.dataset.functionName = key;
-                        li.dataset.functionBody = data[key];
-                        li.onclick = function(event) {
+                        const checkbox = li.querySelector('input[type="checkbox"]');
+                        checkbox.dataset.functionName = key;
+                        checkbox.dataset.functionBody = data[key].code;
+                        checkbox.onchange = function(event) {
                             event.stopPropagation();
-                            displayFunction(this.dataset.functionName, this.dataset.functionBody);
+                            if (this.checked) {
+                                functions[this.dataset.functionName] = this.dataset.functionBody;
+                            } else {
+                                delete functions[this.dataset.functionName];
+                            }
                         };
                     }
                 }
             }
-        }
-
-        function displayFunction(name, body) {
-            const resultElement = document.getElementById('result');
-            resultElement.innerText = `def ${name}():\n${body}`;
-            functions[name] = body;
         }
 
         function generateQuestions() {
@@ -160,7 +159,7 @@
             let questions = "";
             for (let i = 0; i < numOfQuestions; i++) {
                 const randomKey = keys[Math.floor(Math.random() * keys.length)];
-                questions += `def ${randomKey}():\n${functions[randomKey]}\n\n`;
+                questions += `function ${randomKey}() {\n${functions[randomKey]}\n}\n\n`;
             }
 
             document.getElementById('result').innerText = questions;
