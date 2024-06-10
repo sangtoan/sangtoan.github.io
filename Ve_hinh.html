@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vẽ Hình</title>
+    <style>
+        body {
+            display: flex;
+        }
+        #tree {
+            width: 30%;
+            border-right: 1px solid #ccc;
+            padding-right: 10px;
+        }
+        #content {
+            width: 70%;
+            padding-left: 10px;
+        }
+        .menu {
+            width: 100%;
+            background-color: #007bff; /* Màu xanh lam */
+            overflow: hidden;
+        }
+        .menu a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .menu a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="#contact">Contact</a>
+        <a href="tron_de.html">Trộn Đề</a>
+        <a href="fixcode.html">Fix Code</a>
+        <a href="find_latex.html">Tìm Kiếm</a>
+        <a href="Ve_hinh.html">Vẽ Hình</a>
+    </div>
+    <div id="tree"></div>
+    <div id="content">
+        <pre id="latexContent"></pre>
+    </div>
+
+    <script>
+        async function fetchJson() {
+            const response = await fetch('ve_hinh.json');
+            const data = await response.json();
+            buildTree(data);
+        }
+
+        function buildTree(data, parentElement = document.getElementById('tree')) {
+            const ul = document.createElement('ul');
+            parentElement.appendChild(ul);
+
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    const li = document.createElement('li');
+                    li.textContent = key;
+                    ul.appendChild(li);
+
+                    if (typeof data[key] === 'object') {
+                        buildTree(data[key], li);
+                    } else {
+                        li.dataset.content = data[key];
+                        li.onclick = function() {
+                            document.getElementById('latexContent').textContent = this.dataset.content;
+                        };
+                    }
+                }
+            }
+        }
+
+        fetchJson();
+    </script>
+</body>
+</html>
