@@ -100,8 +100,10 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.0/math.min.js"></script>
     <script>
         let functions = {};
+        let selectedFunctions = [];
 
         async function fetchJson() {
             const response = await fetch('tuong_tu.json');
@@ -134,14 +136,22 @@
                         checkbox.onchange = function(event) {
                             event.stopPropagation();
                             if (this.checked) {
-                                functions[this.dataset.functionName] = this.dataset.functionBody;
+                                selectedFunctions.push({
+                                    name: this.dataset.functionName,
+                                    code: this.dataset.functionBody,
+                                    description: this.dataset.description
+                                });
                             } else {
-                                delete functions[this.dataset.functionName];
+                                selectedFunctions = selectedFunctions.filter(func => func.name !== this.dataset.functionName);
                             }
                         };
                     }
                 }
             }
+        }
+
+        function generateRandomValue() {
+            return Math.floor(Math.random() * 10) + 1;
         }
 
         function generateQuestions() {
@@ -151,21 +161,21 @@
                 return;
             }
 
-            const keys = Object.keys(functions);
-            if (keys.length === 0) {
+            if (selectedFunctions.length === 0) {
                 alert("Không có hàm nào để tạo đề.");
                 return;
             }
 
             let questions = "";
             for (let i = 0; i < numOfQuestions; i++) {
-                const randomKey = keys[Math.floor(Math.random() * keys.length)];
-                const func = new Function('a', 'b', 'c', 'd', 'e', 'f', functions[randomKey]);
-                const result = func(1, 2, 3, 4, 5, 6); // Pass sample arguments here
-                questions += `Câu hỏi ${i + 1}:\n${result}\n\n`;
+                selectedFunctions.forEach(func => {
+                    const fn = new Function('a', 'b', 'c', 'd', 'e', 'f', func.code);
+                    const result = fn(generateRandomValue(), generateRandomValue(), generateRandomValue(), generateRandomValue(), generateRandomValue(), generateRandomValue());
+                    questions += `Hàm: ${func.name}\nKết quả: ${result}\n\n`;
+                });
             }
 
-            document.getElementById('result').innerText = questions;
+            document.getElementById('result').textContent = questions;
         }
 
         fetchJson();
