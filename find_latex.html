@@ -68,6 +68,9 @@
             const folderPath = 'Kho_Latex';
             let results = '';
 
+            // Xóa kết quả tìm kiếm trước đó
+            document.getElementById('results').innerHTML = 'Đang tìm kiếm...';
+
             const files = await fetchFiles(repo, folderPath);
             for (const file of files) {
                 const content = await fetchFileContent(file);
