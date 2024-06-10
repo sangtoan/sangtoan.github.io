@@ -95,6 +95,7 @@
             <div id="controls">
                 <input type="number" id="numOfQuestions" placeholder="Nhập số đề" min="1">
                 <button onclick="generateQuestions()">Tạo Đề</button>
+                <button onclick="downloadResult()">Tải Kết Quả</button>
             </div>
             <div id="result"></div>
         </div>
@@ -118,7 +119,7 @@
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {
                     const li = document.createElement('li');
-                    li.innerHTML = `<input type="checkbox" id="${key}" name="${key}" value="${key}"> <label for="${key}">${key}</label>`;
+                    li.textContent = key;
                     ul.appendChild(li);
 
                     if (typeof data[key] === 'object' && !data[key].code) {
@@ -129,21 +130,14 @@
                         };
                         buildTree(data[key], li);
                     } else {
-                        const checkbox = li.querySelector('input[type="checkbox"]');
-                        checkbox.dataset.functionName = key;
-                        checkbox.dataset.functionBody = data[key].code;
-                        checkbox.dataset.description = data[key].description;
-                        checkbox.onchange = function(event) {
+                        li.onclick = function(event) {
                             event.stopPropagation();
-                            if (this.checked) {
-                                selectedFunctions.push({
-                                    name: this.dataset.functionName,
-                                    code: this.dataset.functionBody,
-                                    description: this.dataset.description
-                                });
-                            } else {
-                                selectedFunctions = selectedFunctions.filter(func => func.name !== this.dataset.functionName);
-                            }
+                            selectedFunctions.push({
+                                name: key,
+                                code: data[key].code,
+                                description: data[key].description
+                            });
+                            generateQuestions();
                         };
                     }
                 }
@@ -176,6 +170,18 @@
             }
 
             document.getElementById('result').textContent = questions;
+        }
+
+        function downloadResult() {
+            const resultText = document.getElementById('result').textContent;
+            const blob = new Blob([resultText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'result.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         fetchJson();
