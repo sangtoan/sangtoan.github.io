@@ -39,6 +39,7 @@
             width: 30%;
             border-right: 1px solid #ccc;
             overflow-y: auto;
+            padding: 10px;
         }
         #content {
             width: 70%;
@@ -70,6 +71,12 @@
         li:hover {
             color: #007bff;
         }
+        #controls {
+            margin-bottom: 10px;
+        }
+        #latexContent {
+            white-space: pre-wrap; /* Đảm bảo ngắt dòng đúng */
+        }
     </style>
 </head>
 <body>
@@ -84,11 +91,18 @@
     <div class="container">
         <div id="tree"></div>
         <div id="content">
+            <div id="controls">
+                <button onclick="copyContent()">Copy</button>
+                <button onclick="increaseFontSize()">Tăng kích thước chữ</button>
+                <button onclick="decreaseFontSize()">Giảm kích thước chữ</button>
+            </div>
             <pre id="latexContent"></pre>
         </div>
     </div>
 
     <script>
+        let currentFontSize = 16;
+
         async function fetchJson() {
             const response = await fetch('ve_hinh.json');
             const data = await response.json();
@@ -116,11 +130,43 @@
                         li.dataset.content = data[key];
                         li.onclick = function(event) {
                             event.stopPropagation();
-                            document.getElementById('latexContent').textContent = this.dataset.content;
+                            displayContent(this.dataset.content);
                         };
                     }
                 }
             }
+        }
+
+        function displayContent(content) {
+            const latexContentElement = document.getElementById('latexContent');
+            latexContentElement.innerHTML = applySyntaxHighlighting(content);
+        }
+
+        function applySyntaxHighlighting(content) {
+            // Replace your custom syntax here, for example:
+            content = content.replace(/\\begin{.*?}/g, '<span style="color: blue;">$&</span>');
+            content = content.replace(/\\end{.*?}/g, '<span style="color: red;">$&</span>');
+            // Add more replacements as needed
+            return content;
+        }
+
+        function copyContent() {
+            const content = document.getElementById('latexContent').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('Đã sao chép nội dung!');
+            }).catch(err => {
+                alert('Không thể sao chép nội dung: ' + err);
+            });
+        }
+
+        function increaseFontSize() {
+            currentFontSize += 2;
+            document.getElementById('latexContent').style.fontSize = currentFontSize + 'px';
+        }
+
+        function decreaseFontSize() {
+            currentFontSize = Math.max(12, currentFontSize - 2);
+            document.getElementById('latexContent').style.fontSize = currentFontSize + 'px';
         }
 
         fetchJson();
