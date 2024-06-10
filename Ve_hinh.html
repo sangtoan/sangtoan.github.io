@@ -32,7 +32,7 @@
         }
         .container {
             display: flex;
-            margin-top: 50px;
+            margin-top: 50px; /* Adjust this value if needed */
             height: calc(100vh - 50px);
         }
         #tree {
@@ -75,7 +75,7 @@
             margin-bottom: 10px;
         }
         #latexContent {
-            white-space: pre-wrap;
+            white-space: pre-wrap; /* Đảm bảo ngắt dòng đúng */
         }
     </style>
 </head>
@@ -87,7 +87,6 @@
         <a href="fixcode.html">Fix Code</a>
         <a href="find_latex.html">Tìm Kiếm</a>
         <a href="Ve_hinh.html">Vẽ Hình</a>
-        <a href="tuong_tu.html">Đề Tương Tự</a>
     </div>
     <div class="container">
         <div id="tree"></div>
@@ -105,16 +104,9 @@
         let currentFontSize = 16;
 
         async function fetchJson() {
-            try {
-                const response = await fetch('ve_hinh.json');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                buildTree(data);
-            } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
-            }
+            const response = await fetch('ve_hinh.json');
+            const data = await response.json();
+            buildTree(data);
         }
 
         function buildTree(data, parentElement = document.getElementById('tree')) {
@@ -151,8 +143,10 @@
         }
 
         function applySyntaxHighlighting(content) {
+            // Replace your custom syntax here, for example:
             content = content.replace(/\\begin{.*?}/g, '<span style="color: blue;">$&</span>');
             content = content.replace(/\\end{.*?}/g, '<span style="color: red;">$&</span>');
+            // Add more replacements as needed
             return content;
         }
 
