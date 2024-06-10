@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề Tương Tự</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .menu {
+            width: 100%;
+            background-color: #007bff;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .menu a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .menu a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .container {
+            display: flex;
+            margin-top: 50px; /* Adjust this value if needed */
+            height: calc(100vh - 50px);
+        }
+        #tree {
+            width: 30%;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        #content {
+            width: 70%;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        li {
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        li > ul {
+            display: none;
+        }
+        li.expanded > ul {
+            display: block;
+        }
+        li:before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 5px;
+        }
+        li.expanded:before {
+            content: '▼';
+        }
+        li:hover {
+            color: #007bff;
+        }
+        #controls {
+            margin-bottom: 10px;
+        }
+        #result {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="#contact">Contact</a>
+        <a href="tron_de.html">Trộn Đề</a>
+        <a href="fixcode.html">Fix Code</a>
+        <a href="find_latex.html">Tìm Kiếm</a>
+        <a href="Ve_hinh.html">Vẽ Hình</a>
+        <a href="tuong_tu.html">Đề Tương Tự</a>
+    </div>
+    <div class="container">
+        <div id="tree"></div>
+        <div id="content">
+            <div id="controls">
+                <input type="number" id="numOfQuestions" placeholder="Nhập số đề" min="1">
+                <button onclick="generateQuestions()">Tạo Đề</button>
+            </div>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        let functions = {};
+
+        async function fetchJson() {
+            const response = await fetch('tuong_tu.json');
+            const data = await response.json();
+            buildTree(data);
+        }
+
+        function buildTree(data, parentElement = document.getElementById('tree')) {
+            const ul = document.createElement('ul');
+            parentElement.appendChild(ul);
+
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    const li = document.createElement('li');
+                    li.textContent = key;
+                    ul.appendChild(li);
+
+                    if (typeof data[key] === 'object') {
+                        li.classList.add('parent');
+                        li.onclick = function(event) {
+                            event.stopPropagation();
+                            this.classList.toggle('expanded');
+                        };
+                        buildTree(data[key], li);
+                    } else {
+                        li.dataset.functionName = key;
+                        li.dataset.functionBody = data[key];
+                        li.onclick = function(event) {
+                            event.stopPropagation();
+                            displayFunction(this.dataset.functionName, this.dataset.functionBody);
+                        };
+                    }
+                }
+            }
+        }
+
+        function displayFunction(name, body) {
+            const resultElement = document.getElementById('result');
+            resultElement.innerText = `def ${name}():\n${body}`;
+            functions[name] = body;
+        }
+
+        function generateQuestions() {
+            const numOfQuestions = parseInt(document.getElementById('numOfQuestions').value);
+            if (isNaN(numOfQuestions) || numOfQuestions <= 0) {
+                alert("Vui lòng nhập số lượng đề hợp lệ.");
+                return;
+            }
+
+            const keys = Object.keys(functions);
+            if (keys.length === 0) {
+                alert("Không có hàm nào để tạo đề.");
+                return;
+            }
+
+            let questions = "";
+            for (let i = 0; i < numOfQuestions; i++) {
+                const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                questions += `def ${randomKey}():\n${functions[randomKey]}\n\n`;
+            }
+
+            document.getElementById('result').innerText = questions;
+        }
+
+        fetchJson();
+    </script>
+</body>
+</html>
