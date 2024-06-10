@@ -43,14 +43,6 @@
             <input type="text" class="form-control" id="searchKeyword" placeholder="Nhập từ khóa để tìm tệp LaTeX">
         </div>
         <div class="form-group">
-            <label for="similarityLevel">Tuỳ Chọn:</label>
-            <select class="form-control" id="similarityLevel">
-                <option value="exact">Có Phân Biệt A và a</option>
-                <option value="caseInsensitive">Không Phân Biệt A và a</option>
-                <option value="relative">Tìm tương đối</option>
-            </select>
-        </div>
-        <div class="form-group">
             <label for="searchEnvironment">Môi Trường:</label>
             <select class="form-control" id="searchEnvironment">
                 <option value="ex">ex</option>
@@ -71,7 +63,6 @@
         async function searchTexFiles() {
             const keywordInput = document.getElementById('searchKeyword').value;
             const keywords = keywordInput.split(',').map(kw => kw.trim().toLowerCase());
-            const similarityLevel = document.getElementById('similarityLevel').value;
             const searchEnvironment = document.getElementById('searchEnvironment').value;
             const repo = 'sangtoan/sangtoan.github.io';
             const folderPath = 'Kho_Latex';
@@ -80,7 +71,7 @@
             const files = await fetchFiles(repo, folderPath);
             for (const file of files) {
                 const content = await fetchFileContent(file);
-                const matches = findMatches(content, keywords, similarityLevel, searchEnvironment);
+                const matches = findMatches(content, keywords, searchEnvironment);
                 if (matches.length > 0) {
                     matches.forEach(match => {
                         results += `<div class="card mb-3"><div class="card-body"><pre>${escapeHtml(match)}</pre></div></div>`;
@@ -110,43 +101,15 @@
             return response.text();
         }
 
-        function findMatches(content, keywords, similarityLevel, searchEnvironment) {
+        function findMatches(content, keywords, searchEnvironment) {
             const envPattern = new RegExp(`\\\\begin\\{${searchEnvironment}\\}.*?\\\\end\\{${searchEnvironment}\\}`, 'gs');
             const matches = content.match(envPattern);
             if (matches) {
                 return matches.filter(match => {
-                    if (similarityLevel === 'exact') {
-                        return keywords.every(keyword => match.includes(keyword));
-                    } else if (similarityLevel === 'caseInsensitive') {
-                        return keywords.every(keyword => match.toLowerCase().includes(keyword));
-                    } else if (similarityLevel === 'relative') {
-                        return keywords.every(keyword => fuzzySearch(keyword, match));
-                    }
-                    return false;
+                    return keywords.every(keyword => match.toLowerCase().includes(keyword));
                 });
             }
             return [];
-        }
-
-        function fuzzySearch(needle, haystack) {
-            const needleLen = needle.length;
-            const haystackLen = haystack.length;
-            if (needleLen > haystackLen) {
-                return false;
-            }
-            if (needleLen === haystackLen) {
-                return needle === haystack;
-            }
-            outer: for (let i = 0, j = 0; i < needleLen; i++) {
-                const nch = needle.charCodeAt(i);
-                while (j < haystackLen) {
-                    if (haystack.charCodeAt(j++) === nch) {
-                        continue outer;
-                    }
-                }
-                return false;
-            }
-            return true;
         }
 
         function escapeHtml(text) {
