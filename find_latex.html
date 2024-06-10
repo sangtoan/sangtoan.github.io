@@ -27,8 +27,6 @@
             color: black;
         }
     </style>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <div class="menu">
@@ -70,93 +68,80 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        function searchTexFiles() {
+        async function searchTexFiles() {
             const keyword = document.getElementById('searchKeyword').value.toLowerCase();
             const similarityLevel = document.getElementById('similarityLevel').value;
             const searchEnvironment = document.getElementById('searchEnvironment').value;
+            const repo = 'sangtoan/sangtoan.github.io';
             const folderPath = 'Kho_Latex';
             let results = '';
 
-            fetchDirectory(folderPath);
-
-            function fetchDirectory(path) {
-                fetch(`${path}/`)
-                    .then(response => response.text())
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        const links = doc.querySelectorAll('a');
-
-                        links.forEach(link => {
-                            const name = link.textContent;
-                            if (name.endsWith('/')) {
-                                fetchDirectory(`${path}/${name}`);
-                            } else if (name.endsWith('.tex')) {
-                                fetchFile(`${path}/${name}`);
-                            }
-                        });
-                    })
-                    .catch(error => console.error('Error:', error));
+            const files = await fetchFiles(repo, folderPath);
+            for (const file of files) {
+                const content = await fetchFileContent(file);
+                if (matchesCriteria(content, keyword, similarityLevel, searchEnvironment)) {
+                    results += `<p><a href="${file}" target="_blank">${file}</a></p>`;
+                }
             }
+            document.getElementById('results').innerHTML = results || '<p>Không tìm thấy kết quả nào.</p>';
+        }
 
-            function fetchFile(filePath) {
-                fetch(filePath)
-                    .then(response => response.text())
-                    .then(content => {
-                        if (matchesCriteria(content, keyword, similarityLevel, searchEnvironment)) {
-                            const formattedContent = formatMathJax(content);
-                            results += `<p><a href="${filePath}" target="_blank">${filePath}</a></p><div>${formattedContent}</div>`;
-                            document.getElementById('results').innerHTML = results || '<p>Không tìm thấy kết quả nào.</p>';
-                            MathJax.typeset();  // Yêu cầu MathJax xử lý các công thức toán học
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
+        async function fetchFiles(repo, path) {
+            const response = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`);
+            const data = await response.json();
+            let files = [];
+            for (const item of data) {
+                if (item.type === 'file' && item.name.endsWith('.tex')) {
+                    files.push(item.download_url);
+                } else if (item.type === 'dir') {
+                    const subFiles = await fetchFiles(repo, item.path);
+                    files = files.concat(subFiles);
+                }
             }
+            return files;
+        }
 
-            function matchesCriteria(content, keyword, similarityLevel, searchEnvironment) {
-                const envPattern = new RegExp(`\\\\begin\\{${searchEnvironment}\\}.*?\\\\end\\{${searchEnvironment}\\}`, 'gs');
-                const matches = content.match(envPattern);
-                if (matches) {
-                    for (const match of matches) {
-                        if (similarityLevel === 'exact' && match.includes(keyword)) {
-                            return true;
-                        } else if (similarityLevel === 'caseInsensitive' && match.toLowerCase().includes(keyword.toLowerCase())) {
-                            return true;
-                        } else if (similarityLevel === 'relative' && fuzzySearch(keyword, match)) {
-                            return true;
-                        }
+        async function fetchFileContent(url) {
+            const response = await fetch(url);
+            return response.text();
+        }
+
+        function matchesCriteria(content, keyword, similarityLevel, searchEnvironment) {
+            const envPattern = new RegExp(`\\\\begin\\{${searchEnvironment}\\}.*?\\\\end\\{${searchEnvironment}\\}`, 'gs');
+            const matches = content.match(envPattern);
+            if (matches) {
+                for (const match of matches) {
+                    if (similarityLevel === 'exact' && match.includes(keyword)) {
+                        return true;
+                    } else if (similarityLevel === 'caseInsensitive' && match.toLowerCase().includes(keyword.toLowerCase())) {
+                        return true;
+                    } else if (similarityLevel === 'relative' && fuzzySearch(keyword, match)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function fuzzySearch(needle, haystack) {
+            const needleLen = needle.length;
+            const haystackLen = haystack.length;
+            if (needleLen > haystackLen) {
+                return false;
+            }
+            if (needleLen === haystackLen) {
+                return needle === haystack;
+            }
+            outer: for (let i = 0, j = 0; i < needleLen; i++) {
+                const nch = needle.charCodeAt(i);
+                while (j < haystackLen) {
+                    if (haystack.charCodeAt(j++) === nch) {
+                        continue outer;
                     }
                 }
                 return false;
             }
-
-            function fuzzySearch(needle, haystack) {
-                const needleLen = needle.length;
-                const haystackLen = haystack.length;
-                if (needleLen > haystackLen) {
-                    return false;
-                }
-                if (needleLen === haystackLen) {
-                    return needle === haystack;
-                }
-                outer: for (let i = 0, j = 0; i < needleLen; i++) {
-                    const nch = needle.charCodeAt(i);
-                    while (j < haystackLen) {
-                        if (haystack.charCodeAt(j++) === nch) {
-                            continue outer;
-                        }
-                    }
-                    return false;
-                }
-                return true;
-            }
-
-            function formatMathJax(content) {
-                const escapedContent = content
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
-                return `<pre><code>${escapedContent}</code></pre>`;
-            }
+            return true;
         }
     </script>
 </body>
