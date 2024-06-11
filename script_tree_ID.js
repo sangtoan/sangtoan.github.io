@@ -5,21 +5,31 @@ document.addEventListener('DOMContentLoaded', function () {
         const treeData = buildTree(files);
         const treeContainer = document.getElementById('tree-container');
         buildTreeView(treeContainer, treeData);
+    }).catch(error => {
+        console.error('Error fetching .tex files:', error);
     });
 
     async function fetchTexFiles(url, path = '') {
-        const response = await fetch(url + path);
-        const items = await response.json();
-        let files = [];
-        for (const item of items) {
-            if (item.type === 'file' && item.name.endsWith('.tex')) {
-                const fileContent = await fetch(item.download_url).then(res => res.text());
-                files.push({ path: path + item.name, content: fileContent });
-            } else if (item.type === 'dir') {
-                files = files.concat(await fetchTexFiles(url, path + item.name + '/'));
+        try {
+            const response = await fetch(url + path);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            const items = await response.json();
+            let files = [];
+            for (const item of items) {
+                if (item.type === 'file' && item.name.endsWith('.tex')) {
+                    const fileContent = await fetch(item.download_url).then(res => res.text());
+                    files.push({ path: path + item.name, content: fileContent });
+                } else if (item.type === 'dir') {
+                    files = files.concat(await fetchTexFiles(url, path + item.name + '/'));
+                }
+            }
+            return files;
+        } catch (error) {
+            console.error('Failed to fetch files:', error);
+            throw error;
         }
-        return files;
     }
 
     function buildTree(files) {
