@@ -30,21 +30,26 @@ document.addEventListener('DOMContentLoaded', function () {
         const tree = {};
 
         files.forEach(file => {
-            const idPattern = /\\begin{ex}.*?(\d[A-Z]\d[YBKGTNHVC]\d-\d).*?\\end{ex}/g;
+            const exPattern = /\\begin{ex}.*?\\end{ex}/gs;
+            const idPattern = /\[(\d[A-Z]\d[YBKGTNHVC]\d-\d)]/g;
             let match;
-            while ((match = idPattern.exec(file.content)) !== null) {
-                const id = match[1];
-                const parts = id.split('');
-                let current = tree;
-                parts.forEach((part, index) => {
-                    if (!current[part]) {
-                        current[part] = { _files: [] };
-                    }
-                    if (index === parts.length - 1) {
-                        current[part]._files.push({ path: file.path, id: id, content: match[0] });
-                    }
-                    current = current[part];
-                });
+            while ((match = exPattern.exec(file.content)) !== null) {
+                const element = match[0];
+                let idMatch;
+                while ((idMatch = idPattern.exec(element)) !== null) {
+                    const id = idMatch[1];
+                    const parts = id.split('');
+                    let current = tree;
+                    parts.forEach((part, index) => {
+                        if (!current[part]) {
+                            current[part] = { _files: [] };
+                        }
+                        if (index === parts.length - 1) {
+                            current[part]._files.push({ path: file.path, id: id, content: element });
+                        }
+                        current = current[part];
+                    });
+                }
             }
         });
 
