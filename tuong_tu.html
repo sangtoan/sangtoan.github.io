@@ -103,7 +103,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.0/math.min.js"></script>
     <script>
-        let functions = {};
         let selectedFunctions = [];
 
         async function fetchJson() {
@@ -120,7 +119,6 @@
                 if (data.hasOwnProperty(key)) {
                     const li = document.createElement('li');
                     li.textContent = key;
-                    ul.appendChild(li);
 
                     if (typeof data[key] === 'object' && !data[key].code) {
                         li.classList.add('parent');
@@ -130,16 +128,22 @@
                         };
                         buildTree(data[key], li);
                     } else {
-                        li.onclick = function(event) {
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.onclick = function(event) {
                             event.stopPropagation();
-                            selectedFunctions.push({
-                                name: key,
-                                code: data[key].code,
-                                description: data[key].description
-                            });
-                            generateQuestions();
+                            if (this.checked) {
+                                selectedFunctions.push({
+                                    name: data[key].Name,
+                                    code: data[key].code
+                                });
+                            } else {
+                                selectedFunctions = selectedFunctions.filter(func => func.name !== data[key].Name);
+                            }
                         };
+                        li.insertBefore(checkbox, li.firstChild);
                     }
+                    ul.appendChild(li);
                 }
             }
         }
@@ -163,8 +167,8 @@
             let questions = "";
             for (let i = 0; i < numOfQuestions; i++) {
                 selectedFunctions.forEach(func => {
-                    const fn = new Function('a', 'b', 'c', 'd', 'e', 'f', func.code);
-                    const result = fn(generateRandomValue(), generateRandomValue(), generateRandomValue(), generateRandomValue(), generateRandomValue(), generateRandomValue());
+                    const fn = new Function(func.code);
+                    const result = fn();
                     questions += `Hàm: ${func.name}\nKết quả: ${JSON.stringify(result, null, 2)}\n\n`;
                 });
             }
