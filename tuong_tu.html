@@ -167,13 +167,15 @@
             let questions = "";
             const functionString = Object.values(allFunctions).join('\n');
 
-            for (let i = 0; i < numOfQuestions; i++) {
-                selectedFunctions.forEach(func => {
-                    const result = eval(`(function() { ${functionString} ${func.code} })()`);
-                    const description = new Function(`return \`${func.template}\`;`).call(result);
-                    questions += `${description}\n\n`;
-                });
-            }
+            selectedFunctions.forEach(func => {
+                const compiledFunction = new Function('return (function() { ' + functionString + func.code + ' })()');
+                
+                for (let i = 0; i < numOfQuestions; i++) {
+                    const result = compiledFunction();
+                    const description = new Function('a', 'b', 'c', 'A', 'B', 'C', 'D', 'projection', `return \`${func.template}\`;`);
+                    questions += `${description(result.a, result.b, result.c, result.A, result.B, result.C, result.D, result.projection)}\n\n`;
+                }
+            });
 
             document.getElementById('result').textContent = questions;
         }
@@ -184,7 +186,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'ketqua.tex';
+            a.download = 'result.tex';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
