@@ -30,13 +30,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         files.forEach(file => {
             const exPattern = /\\begin{ex}.*?\\end{ex}/gs;
-            const idPattern = /\[(\d[A-Z]\d[YBKGTNHVC]\d\d)\]/;
+            const idPattern = /\[(\d[A-Z]\d[YBKGTNHVC]\d-\d)\]/;
             let match;
             while ((match = exPattern.exec(file.content)) !== null) {
                 const element = match[0];
                 const idMatch = idPattern.exec(element);
                 if (idMatch) {
-                    const id = idMatch[1];
+                    const id = idMatch[1].replace(/-/g, ''); // Loại bỏ dấu gạch nối để hiển thị gọn
                     const parts = id.split('');
                     let current = tree;
                     parts.forEach((part, index) => {
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data[key].forEach(file => {
                     const fileLi = document.createElement('li');
                     fileLi.className = 'file';
-                    fileLi.textContent = file.id.replace(/-/g, ''); // Hiển thị ID không có dấu gạch nối
+                    fileLi.textContent = file.id; // Hiển thị ID không có dấu gạch nối
                     fileLi.addEventListener('click', () => {
                         displayFileContent(file);
                     });
