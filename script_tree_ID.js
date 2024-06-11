@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const element = match[0];
                 const idMatch = idPattern.exec(element);
                 if (idMatch) {
-                    //const id = idMatch[1].replace(/-/g, ''); // Loại bỏ dấu gạch nối để hiển thị gọn
+                    let id = idMatch[1].replace(/-/g, ''); // Loại bỏ dấu gạch nối để hiển thị gọn
                     const parts = id.split('');
                     let current = tree;
                     parts.forEach((part, index) => {
