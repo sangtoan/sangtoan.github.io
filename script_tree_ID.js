@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     fetchedFiles.push({ path: file, content: content });
                     if (fetchedFiles.length === files.length) {
                         const treeData = buildTree(fetchedFiles);
-                        console.log('Tree structure:', treeData);  // Ghi lại cấu trúc cây này
+                        console.log('Tree structure:', treeData);  // Ghi lại cấu trúc cây
                         buildTreeView(treeContainer, treeData);
                     }
                 }).catch(error => {
@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 const childUl = document.createElement('ul');
-                childUl.classList.add('hidden');
                 buildTreeView(childUl, data[key], parentKey + key);
                 dirLi.appendChild(childUl);
                 ul.appendChild(dirLi);
