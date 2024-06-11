@@ -148,10 +148,6 @@
             }
         }
 
-        function generateRandomValue() {
-            return Math.floor(Math.random() * 21) - 10;
-        }
-
         function generateQuestions() {
             const numOfQuestions = parseInt(document.getElementById('numOfQuestions').value);
             if (isNaN(numOfQuestions) || numOfQuestions <= 0) {
