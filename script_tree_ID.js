@@ -3,10 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     console.log('Loading tex_files.json...');
     fetch('tex_files.json')
-        .then(response => {
-            console.log('Received response from tex_files.json');
-            return response.json();
-        })
+        .then(response => response.json())
         .then(files => {
             console.log('Files:', files);
             const fetchedFiles = [];
@@ -59,34 +56,34 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function buildTreeView(container, data, parentKey = '') {
+        const ul = document.createElement('ul');
+        container.appendChild(ul);
+
         for (const key in data) {
             if (key === '_files') {
                 data[key].forEach(file => {
-                    const fileDiv = document.createElement('div');
-                    fileDiv.className = 'file';
-                    fileDiv.textContent = parentKey + file.id + ' (' + file.path + ')';
-                    fileDiv.addEventListener('click', () => {
+                    const fileLi = document.createElement('li');
+                    fileLi.className = 'file';
+                    fileLi.textContent = parentKey + file.id + ' (' + file.path + ')';
+                    fileLi.addEventListener('click', () => {
                         displayFileContent(file);
                     });
-                    container.appendChild(fileDiv);
+                    ul.appendChild(fileLi);
                 });
             } else {
-                const dirDiv = document.createElement('div');
-                dirDiv.className = 'directory';
-                dirDiv.textContent = key;
-                dirDiv.addEventListener('click', () => {
-                    const childContainer = dirDiv.nextElementSibling;
-                    if (childContainer) {
-                        childContainer.classList.toggle('hidden');
-                    }
+                const dirLi = document.createElement('li');
+                dirLi.textContent = key;
+                dirLi.classList.add('directory');
+                dirLi.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    this.classList.toggle('expanded');
                 });
 
-                const childContainer = document.createElement('div');
-                childContainer.className = 'hidden';
-                buildTreeView(childContainer, data[key], parentKey + key);
-
-                container.appendChild(dirDiv);
-                container.appendChild(childContainer);
+                const childUl = document.createElement('ul');
+                childUl.classList.add('hidden');
+                buildTreeView(childUl, data[key], parentKey + key);
+                dirLi.appendChild(childUl);
+                ul.appendChild(dirLi);
             }
         }
     }
