@@ -121,7 +121,7 @@ function hoanViNgoacLonNgauNhien(text) {
 
 function hoanViCauTruc(text) {
     let hoanViKetQua = hoanViNgoacLonNgauNhien(text);
-    return `Phần 1: có ${hoanViKetQua.countChoice} câu\n${hoanViKetQua.groupChoice}\n\nPhần 2: có ${hoanViKetQua.countChoi2ceTF} câu\n${hoanViKetQua.groupChoi2ceTF}\n\nPhần 3: có ${hoanViKetQua.countNone} câu\n${hoanViKetQua.groupNone}`;
+    return `\\subsection*{PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countChoice}. Mỗi câu hỏi thí sinh chỉ chọn một phương án.}\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanI]câu\n${hoanViKetQua.groupChoice}\n\nPhần 2: có ${hoanViKetQua.countChoi2ceTF} câu\n${hoanViKetQua.groupChoi2ceTF}\n\nPhần 3: có ${hoanViKetQua.countNone} câu\n${hoanViKetQua.groupNone}`;
 }
 
 $(document).ready(function () {
