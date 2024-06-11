@@ -1,13 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
     const treeContainer = document.getElementById('tree-container');
 
+    console.log('Loading tex_files.json...');
     fetch('tex_files.json')
-        .then(response => response.json())
+        .then(response => {
+            console.log('Received response from tex_files.json');
+            return response.json();
+        })
         .then(files => {
+            console.log('Files:', files);
             const fetchedFiles = [];
 
             files.forEach(file => {
                 fetchFileContent(file).then(content => {
+                    console.log('Fetched content for:', file);
                     fetchedFiles.push({ path: file, content: content });
                     if (fetchedFiles.length === files.length) {
                         const treeData = buildTree(fetchedFiles);
@@ -48,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        console.log('Tree structure:', tree);
         return tree;
     }
 
@@ -77,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const childContainer = document.createElement('div');
                 childContainer.className = 'hidden';
                 buildTreeView(childContainer, data[key], parentKey + key);
-                
+
                 container.appendChild(dirDiv);
                 container.appendChild(childContainer);
             }
