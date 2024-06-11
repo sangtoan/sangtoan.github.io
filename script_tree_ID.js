@@ -51,13 +51,13 @@ document.addEventListener('DOMContentLoaded', function () {
         return tree;
     }
 
-    function buildTreeView(container, data) {
+    function buildTreeView(container, data, parentKey = '') {
         for (const key in data) {
             if (key === '_files') {
                 data[key].forEach(file => {
                     const fileDiv = document.createElement('div');
                     fileDiv.className = 'file';
-                    fileDiv.textContent = file.id + ' (' + file.path + ')';
+                    fileDiv.textContent = parentKey + file.id + ' (' + file.path + ')';
                     fileDiv.addEventListener('click', () => {
                         displayFileContent(file);
                     });
@@ -76,8 +76,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const childContainer = document.createElement('div');
                 childContainer.className = 'hidden';
-                buildTreeView(childContainer, data[key]);
-
+                buildTreeView(childContainer, data[key], parentKey + key);
+                
                 container.appendChild(dirDiv);
                 container.appendChild(childContainer);
             }
