@@ -10,7 +10,7 @@
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            background-image: url('background.jpg');
+            background: #f0f0f0; /* Màu nền sáng để dễ nhìn */
         }
         .menu {
             width: 100%;
@@ -43,11 +43,13 @@
             border-right: 1px solid #ccc;
             overflow-y: auto;
             padding: 10px;
+            background: #fff; /* Màu nền trắng */
         }
         #result-container {
             width: 70%;
             padding: 20px;
             overflow-y: auto;
+            background: #fff; /* Màu nền trắng */
         }
         .directory, .file {
             cursor: pointer;
@@ -58,6 +60,9 @@
         }
         .hidden {
             display: none;
+        }
+        .file {
+            margin-left: 20px; /* Thụt lề các file */
         }
     </style>
 </head>
