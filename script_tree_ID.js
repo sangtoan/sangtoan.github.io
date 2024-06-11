@@ -61,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
         container.appendChild(ul);
 
         for (const key in data) {
-            console.log('Building tree for key:', key);  // Ghi lại key đang xử lý
             if (key === '_files') {
                 data[key].forEach(file => {
                     const fileLi = document.createElement('li');
@@ -79,9 +78,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 dirLi.addEventListener('click', function (event) {
                     event.stopPropagation();
                     this.classList.toggle('expanded');
+                    const childUl = this.querySelector('ul');
+                    if (childUl) {
+                        childUl.classList.toggle('hidden');
+                    }
                 });
 
                 const childUl = document.createElement('ul');
+                childUl.classList.add('hidden');
                 buildTreeView(childUl, data[key], parentKey + key);
                 dirLi.appendChild(childUl);
                 ul.appendChild(dirLi);
