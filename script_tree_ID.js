@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     fetchedFiles.push({ path: file, content: content });
                     if (fetchedFiles.length === files.length) {
                         const treeData = buildTree(fetchedFiles);
+                        console.log('Tree structure:', treeData);  // Ghi lại cấu trúc cây
                         buildTreeView(treeContainer, treeData);
                     }
                 }).catch(error => {
@@ -29,13 +30,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         files.forEach(file => {
             const exPattern = /\\begin{ex}.*?\\end{ex}/gs;
-            const idPattern = /\[(\d[A-Z]\d[YBKGTNHVC]\d-\d)]/;
+            const idPattern = /\[(\d[A-Z]\d[YBKGTNHVC]\d-\d)\]/;
             let match;
             while ((match = exPattern.exec(file.content)) !== null) {
                 const element = match[0];
                 const idMatch = idPattern.exec(element);
                 if (idMatch) {
-                    const id = idMatch[1];
+                    let id = idMatch[0].replace(/[\[\]-]/g, ''); // Loại bỏ dấu gạch nối và dấu ngoặc để hiển thị gọn
                     const parts = id.split('');
                     let current = tree;
                     parts.forEach((part, index) => {
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data[key].forEach(file => {
                     const fileLi = document.createElement('li');
                     fileLi.className = 'file';
-                    fileLi.textContent = parentKey + file.id + ' (' + file.path + ')';
+                    fileLi.textContent = file.id; // Hiển thị ID không có dấu gạch nối
                     fileLi.addEventListener('click', () => {
                         displayFileContent(file);
                     });
@@ -77,9 +78,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 dirLi.addEventListener('click', function (event) {
                     event.stopPropagation();
                     this.classList.toggle('expanded');
+                    const childUl = this.querySelector('ul');
+                    if (childUl) {
+                        childUl.classList.toggle('hidden');
+                    }
                 });
 
                 const childUl = document.createElement('ul');
+                childUl.classList.add('hidden');
                 buildTreeView(childUl, data[key], parentKey + key);
                 dirLi.appendChild(childUl);
                 ul.appendChild(dirLi);
@@ -94,7 +100,11 @@ document.addEventListener('DOMContentLoaded', function () {
         fileContentDiv.innerHTML = `
             <h2>${file.id}</h2>
             <pre>${file.content}</pre>
+            <button class="close-btn">X</button>
         `;
+        fileContentDiv.querySelector('.close-btn').addEventListener('click', () => {
+            resultContainer.removeChild(fileContentDiv);
+        });
         resultContainer.appendChild(fileContentDiv);
     }
 
