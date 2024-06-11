@@ -107,14 +107,15 @@
         <a href="tuong_tu.html">Đề Tương Tự</a>
         <a href="menu_tree.html">Menu ID</a>
     </div>
+    <!--
     <div id="login-container">
         <h2>Login</h2>
         <input type="text" id="username" placeholder="Username" />
         <input type="password" id="password" placeholder="Password" />
         <button onclick="login()">Login</button>
     </div>
-
-    <div id="main-content" class="container" style="display: none;">
+    -->
+    <div id="main-content" class="container" style="display: block;">
         <div class="input">
             <select name="type" id="type">
                 <option value="png">png</option>
@@ -137,7 +138,7 @@
             .then(response => response.json())
             .then(data => {
                 users = data;
-                checkLoginStatus();
+                // checkLoginStatus(); // Tạm thời không kiểm tra đăng nhập
             })
             .catch(error => {
                 console.error('Error loading user data:', error);
