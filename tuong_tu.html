@@ -138,7 +138,8 @@
                                 selectedFunctions.push({
                                     name: data[key].Name,
                                     description: data[key].Description,
-                                    code: data[key].code
+                                    code: data[key].code,
+                                    template: data[key].template
                                 });
                             } else {
                                 selectedFunctions = selectedFunctions.filter(func => func.name !== data[key].Name);
@@ -169,7 +170,8 @@
             for (let i = 0; i < numOfQuestions; i++) {
                 selectedFunctions.forEach(func => {
                     const result = eval(`(function() { ${functionString} ${func.code} })()`);
-                    questions += `\\begin{ex}\n${func.description}\n\\shortans{${JSON.stringify(result, null, 2)}}\n\\loigiai{\n}\n\\end{ex}\n\n`;
+                    const description = eval('`' + func.template + '`');
+                    questions += `${description}\n\n`;
                 });
             }
 
