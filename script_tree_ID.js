@@ -1,36 +1,25 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const repoUrl = 'https://api.github.com/repos/sangtoan/sangtoan.github.io/contents/';
+    const treeContainer = document.getElementById('tree-container');
 
-    fetchTexFiles(repoUrl).then(files => {
-        const treeData = buildTree(files);
-        const treeContainer = document.getElementById('tree-container');
-        buildTreeView(treeContainer, treeData);
-    }).catch(error => {
-        console.error('Error fetching .tex files:', error);
-    });
+    fetch('tex_files.json')
+        .then(response => response.json())
+        .then(files => {
+            const fetchedFiles = [];
 
-    async function fetchTexFiles(url, path = '') {
-        try {
-            const response = await fetch(url + path);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const items = await response.json();
-            let files = [];
-            for (const item of items) {
-                if (item.type === 'file' && item.name.endsWith('.tex')) {
-                    const fileContent = await fetch(item.download_url).then(res => res.text());
-                    files.push({ path: path + item.name, content: fileContent });
-                } else if (item.type === 'dir') {
-                    files = files.concat(await fetchTexFiles(url, path + item.name + '/'));
-                }
-            }
-            return files;
-        } catch (error) {
-            console.error('Failed to fetch files:', error);
-            throw error;
-        }
-    }
+            files.forEach(file => {
+                fetchFileContent(file).then(content => {
+                    fetchedFiles.push({ path: file, content: content });
+                    if (fetchedFiles.length === files.length) {
+                        const treeData = buildTree(fetchedFiles);
+                        buildTreeView(treeContainer, treeData);
+                    }
+                }).catch(error => {
+                    console.error('Error fetching file:', file, error);
+                });
+            });
+        }).catch(error => {
+            console.error('Error loading file list:', error);
+        });
 
     function buildTree(files) {
         const tree = {};
@@ -101,5 +90,23 @@ document.addEventListener('DOMContentLoaded', function () {
             <h2>${file.id}</h2>
             <pre>${file.content}</pre>
         `;
+    }
+
+    function fetchFileContent(path) {
+        return new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            request.open('GET', path, true);
+            request.onload = function () {
+                if (request.status >= 200 && request.status < 400) {
+                    resolve(request.responseText);
+                } else {
+                    reject(new Error(`Failed to load file: ${path}`));
+                }
+            };
+            request.onerror = function () {
+                reject(new Error(`Failed to load file: ${path}`));
+            };
+            request.send();
+        });
     }
 });
