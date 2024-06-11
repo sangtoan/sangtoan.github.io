@@ -1,13 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     const repoUrl = 'https://api.github.com/repos/sangtoan/sangtoan.github.io/contents/';
 
-    // Fetch all .tex files from the repository
     fetchTexFiles(repoUrl).then(files => {
-        // Build the tree structure from the files
         const treeData = buildTree(files);
-        // Get the tree container element
         const treeContainer = document.getElementById('tree-container');
-        // Build the tree view
         buildTreeView(treeContainer, treeData);
     });
 
@@ -31,12 +27,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         files.forEach(file => {
             const exPattern = /\\begin{ex}.*?\\end{ex}/gs;
-            const idPattern = /\[(\d[A-Z]\d[YBKGTNHVC]\d-\d)]/g;
+            const idPattern = /\[(\d[A-Z]\d[YBKGTNHVC]\d-\d)]/;
             let match;
             while ((match = exPattern.exec(file.content)) !== null) {
                 const element = match[0];
-                let idMatch;
-                while ((idMatch = idPattern.exec(element)) !== null) {
+                const idMatch = idPattern.exec(element);
+                if (idMatch) {
                     const id = idMatch[1];
                     const parts = id.split('');
                     let current = tree;
