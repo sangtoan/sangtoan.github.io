@@ -118,7 +118,7 @@
             parentElement.appendChild(ul);
 
             for (const key in data) {
-                if (data.hasOwnProperty(key)) {
+                if (data.hasOwnProperty(key) && key !== 'functions') {
                     const li = document.createElement('li');
                     li.textContent = key;
 
@@ -137,6 +137,7 @@
                             if (this.checked) {
                                 selectedFunctions.push({
                                     name: data[key].Name,
+                                    description: data[key].Description,
                                     code: data[key].code
                                 });
                             } else {
@@ -168,7 +169,7 @@
             for (let i = 0; i < numOfQuestions; i++) {
                 selectedFunctions.forEach(func => {
                     const result = eval(`(function() { ${functionString} ${func.code} })()`);
-                    questions += `Hàm: ${func.name}\nKết quả: ${JSON.stringify(result, null, 2)}\n\n`;
+                    questions += `\\begin{ex}\n${func.description}\n\\shortans{${JSON.stringify(result, null, 2)}}\n\\loigiai{\n}\n\\end{ex}\n\n`;
                 });
             }
 
@@ -181,7 +182,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'result.txt';
+            a.download = 'result.tex';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
