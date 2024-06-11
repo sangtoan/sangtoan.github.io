@@ -11,7 +11,7 @@
             "Name": "Bài toán số 1",
             "Description": "Hình chiếu của điểm (a, b, c) trên mặt phẳng Ax + By + Cz + D = 0. Đáp số là:",
             "code": "let a = getRandomInt(-5, 5); let b = getRandomInt(-5, 5); let c = getRandomInt(-5, 5); let A = getRandomFromArray([-2, 1, 2]); let B = getRandomFromArray([-2, 1, 2]); let C = getRandomFromArray([-2, 1, 2]); let D = getRandomFromArray([-2, 1, 2]); let projection = projectPointToPlane(a, b, c, A, B, C, D); return { a, b, c, A, B, C, D, projection };",
-            "template": "Hình chiếu của điểm (${a}, ${b}, ${c}) trên mặt phẳng ${A}x + ${B}y + ${C}z + ${D} = 0. Đáp số là: \\begin{ex}\n\\dapso{(${projection.x}, ${projection.y}, ${projection.z})}\n\\end{ex}"
+            "template": "Hình chiếu của điểm (${a}, ${b}, ${c}) trên mặt phẳng ${A}x + ${B}y + ${C}z + ${D} = 0. Đáp số là: \\\\begin{ex}\n\\shortans{(${projection.x}, ${projection.y}, ${projection.z})}\n\\end{ex}"
         }
     }
 }
