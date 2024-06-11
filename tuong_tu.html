@@ -172,8 +172,8 @@
                 
                 for (let i = 0; i < numOfQuestions; i++) {
                     const result = compiledFunction();
-                    const description = new Function('a', 'b', 'c', 'A', 'B', 'C', 'D', 'projection', `return \`${func.template}\`;`);
-                    questions += `${description(result.a, result.b, result.c, result.A, result.B, result.C, result.D, result.projection)}\n\n`;
+                    const description = new Function('a', 'b', 'c', 'A', 'B', 'C', 'D', 'projection', 'derivativeAtA', `return \`${func.template}\`;`);
+                    questions += `${description(result.a, result.b, result.c, result.A, result.B, result.C, result.D, result.projection, result.derivativeAtA)}\n\n`;
                 }
             });
 
