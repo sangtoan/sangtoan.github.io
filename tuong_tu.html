@@ -192,6 +192,15 @@
             document.body.removeChild(a);
         }
 
+        // Defining functions so they are available in the global context
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRandomFromArray(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
         fetchJson();
     </script>
 </body>
