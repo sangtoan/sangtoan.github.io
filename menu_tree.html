@@ -8,6 +8,9 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            background: #f0f0f0;
         }
         .menu {
             width: 100%;
@@ -40,11 +43,13 @@
             border-right: 1px solid #ccc;
             overflow-y: auto;
             padding: 10px;
+            background: #fff;
         }
         #result-container {
             width: 70%;
             padding: 20px;
             overflow-y: auto;
+            background: #fff;
         }
         ul {
             list-style-type: none;
@@ -53,9 +58,11 @@
         li {
             cursor: pointer;
             margin: 5px 0;
+            position: relative;
         }
         li > ul {
             display: none;
+            padding-left: 20px;
         }
         li.expanded > ul {
             display: block;
@@ -71,8 +78,23 @@
         li:hover {
             color: #007bff;
         }
-        .file {
-            margin-left: 20px;
+        .file-content {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            background: #fafafa;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 2px 5px;
         }
     </style>
 </head>
