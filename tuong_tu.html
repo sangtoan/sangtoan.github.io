@@ -167,8 +167,7 @@
             let questions = "";
             for (let i = 0; i < numOfQuestions; i++) {
                 selectedFunctions.forEach(func => {
-                    const fn = new Function(func.code);
-                    const result = fn();
+                    const result = eval(`(function() { ${func.code} })()`);
                     questions += `Hàm: ${func.name}\nKết quả: ${JSON.stringify(result, null, 2)}\n\n`;
                 });
             }
