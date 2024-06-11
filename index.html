@@ -3,18 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search id</title>
+    <title>Login Page</title>
     <style>
-        html, body {
-            width: 100%;
-            height: 100%;
+        body {
             margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-image: url('background.jpg');
+            background-size: cover;
+        }
+        .menu {
+            width: 100%;
+            background-color: #007bff;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        .menu a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .menu a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
         }
         .input {
             width: 100%;
             display: flex;
             justify-content: center;
+            margin-top: 20px;
         }
         #search {
             width: 200px;
@@ -33,26 +65,33 @@
         #img {
             display: none;
         }
-        .menu {
-            width: 100%;
-            background-color: #007bff; /* Màu xanh lam */
-            overflow: hidden;
+        #login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
         }
-        .menu a {
-            float: left;
-            display: block;
+        #login-container input {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #login-container button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
             color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
+            border: none;
+            cursor: pointer;
         }
-        .menu a:hover {
-            background-color: #ddd;
-            color: black;
+        #login-container button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
-<body id="body" style="background-image: url('background.jpg')">
+<body id="body">
     <div class="menu">
         <a href="index.html">Home</a>
         <a href="#contact">Contact</a>
@@ -63,21 +102,53 @@
         <a href="tuong_tu.html">Đề Tương Tự</a>
         <a href="menu_tree.html">Menu ID</a>
     </div>
-    <div class="input">
-        <select name="type" id="type">
-            <option value="png">png</option>
-            <option value="jpg">jpg</option>
-            <option value="svg">svg</option>
-            <option value="pdf">pdf</option>
-        </select>
-        <input id="search" />
-        <button onclick="find()">Tìm</button>
-        <button onclick="clearImage()">Xóa ảnh</button>
+    <div id="login-container">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username" />
+        <input type="password" id="password" placeholder="Password" />
+        <button onclick="login()">Login</button>
     </div>
-    <img id="img" />
-    <iframe class="frame" id="frame"></iframe>
+
+    <div id="main-content" class="container" style="display: none;">
+        <div class="input">
+            <select name="type" id="type">
+                <option value="png">png</option>
+                <option value="jpg">jpg</option>
+                <option value="svg">svg</option>
+                <option value="pdf">pdf</option>
+            </select>
+            <input id="search" />
+            <button onclick="find()">Tìm</button>
+            <button onclick="clearImage()">Xóa ảnh</button>
+        </div>
+        <img id="img" />
+        <iframe class="frame" id="frame"></iframe>
+    </div>
 
     <script>
+        let users = {};
+
+        fetch('tai_khoan.json')
+            .then(response => response.json())
+            .then(data => {
+                users = data;
+            })
+            .catch(error => {
+                console.error('Error loading user data:', error);
+            });
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (users[username] && users[username] === password) {
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            } else {
+                alert('Incorrect username or password.');
+            }
+        }
+
         function find() {
             const val = document.getElementById("search").value;
             const type = document.getElementById("type").value;
