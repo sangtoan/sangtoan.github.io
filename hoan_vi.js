@@ -121,7 +121,7 @@ function hoanViNgoacLonNgauNhien(text) {
 
 function hoanViCauTruc(text) {
     let hoanViKetQua = hoanViNgoacLonNgauNhien(text);
-    return `\\subsection*{PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countChoice}. Mỗi câu hỏi thí sinh chỉ chọn một phương án.}\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanI]câu\n${hoanViKetQua.groupChoice}\n\nPhần 2: có ${hoanViKetQua.countChoi2ceTF} câu\n${hoanViKetQua.groupChoi2ceTF}\n\nPhần 3: có ${hoanViKetQua.countNone} câu\n${hoanViKetQua.groupNone}`;
+    return `\\subsection*{PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countChoice}}. Mỗi câu hỏi thí sinh chỉ chọn một phương án.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanI]\n${hoanViKetQua.groupChoice}\n\\Closesolutionfile{ans}\n\\subsection*{PHẦN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countChoi2ceTF}}. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanII]\n${hoanViKetQua.groupChoi2ceTF}\n\n\Closesolutionfile{ans}\n\\subsection*{PHẦN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countNone}.}\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanIII]\n${hoanViKetQua.groupNone}\n\n\\Closesolutionfile{ans}\n\\newpage\n\\begin{center}\n\\textbf{\\large BẢNG ĐÁP ÁN}\n\\end{center}\n\\noindent\\textbf{A. ĐÁP ÁN PHẦN I}\n\\inputansbox{10}{ans/ans-phanI}\n\\noindent\\textbf{B. ĐÁP ÁN PHẦN II}\n\\inputansbox[2]{2}{ans/ans-phanII}\n\\noindent\\textbf{C. ĐÁP ÁN PHẦN III}\n\\inputansbox[3]{6}{ans/ans-phanIII}`;
 }
 
 $(document).ready(function () {
