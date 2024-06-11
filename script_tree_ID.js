@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 const childUl = document.createElement('ul');
-                childUl.classList.add('hidden');
                 buildTreeView(childUl, data[key], parentKey + key);
                 dirLi.appendChild(childUl);
                 ul.appendChild(dirLi);
@@ -90,10 +89,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function displayFileContent(file) {
         const resultContainer = document.getElementById('result-container');
-        resultContainer.innerHTML = `
+        const fileContentDiv = document.createElement('div');
+        fileContentDiv.className = 'file-content';
+        fileContentDiv.innerHTML = `
             <h2>${file.id}</h2>
             <pre>${file.content}</pre>
         `;
+        resultContainer.appendChild(fileContentDiv);
     }
 
     function fetchFileContent(path) {
