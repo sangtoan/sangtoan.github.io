@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     fetchedFiles.push({ path: file, content: content });
                     if (fetchedFiles.length === files.length) {
                         const treeData = buildTree(fetchedFiles);
+                        console.log('Tree structure:', treeData);  // Ghi lại cấu trúc cây
                         buildTreeView(treeContainer, treeData);
                     }
                 }).catch(error => {
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         files.forEach(file => {
             const exPattern = /\\begin{ex}.*?\\end{ex}/gs;
-            const idPattern = /\[(\d[A-Z]\d[YBKGTNHVC]\d-\d)]/;
+            const idPattern = /\[(\d[A-Z]\d[YBKGTNHVC]\d\d)\]/;
             let match;
             while ((match = exPattern.exec(file.content)) !== null) {
                 const element = match[0];
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data[key].forEach(file => {
                     const fileLi = document.createElement('li');
                     fileLi.className = 'file';
-                    fileLi.textContent = parentKey + file.id + ' (' + file.path + ')';
+                    fileLi.textContent = file.id.replace(/-/g, ''); // Hiển thị ID không có dấu gạch nối
                     fileLi.addEventListener('click', () => {
                         displayFileContent(file);
                     });
@@ -77,6 +78,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 dirLi.addEventListener('click', function (event) {
                     event.stopPropagation();
                     this.classList.toggle('expanded');
+                    const childUl = this.querySelector('ul');
+                    if (childUl) {
+                        childUl.classList.toggle('hidden');
+                    }
                 });
 
                 const childUl = document.createElement('ul');
@@ -90,10 +95,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function displayFileContent(file) {
         const resultContainer = document.getElementById('result-container');
-        resultContainer.innerHTML = `
+        const fileContentDiv = document.createElement('div');
+        fileContentDiv.className = 'file-content';
+        fileContentDiv.innerHTML = `
             <h2>${file.id}</h2>
             <pre>${file.content}</pre>
+            <button class="close-btn">X</button>
         `;
+        fileContentDiv.querySelector('.close-btn').addEventListener('click', () => {
+            resultContainer.removeChild(fileContentDiv);
+        });
+        resultContainer.appendChild(fileContentDiv);
     }
 
     function fetchFileContent(path) {
