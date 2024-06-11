@@ -13,13 +13,10 @@
             "code": "function gcd(a, b) { while (b) { let temp = b; b = a % b; a = temp; } return a; } function simplifyFraction(numerator, denominator) { const divisor = gcd(numerator, denominator); const simplifiedNumerator = numerator / divisor; const simplifiedDenominator = denominator / divisor; return `\\\\frac{${simplifiedNumerator}}{${simplifiedDenominator}}`; } function projectPointToPlane(a, b, c, A, B, C, D) { let distance1 = (A * a + B * b + C * c + D); let distance2 = (A * A + B * B + C * C); let x_tu = a * distance2 - A * distance1; let y_tu = b * distance2 - B * distance1; let z_tu = c * distance2 - C * distance1; let x = simplifyFraction(x_tu, distance2); let y = simplifyFraction(y_tu, distance2); let z = simplifyFraction(z_tu, distance2); return { x: x, y: y, z: z }; } let a = 1, b = 2, c = 0; let A = 2, B = -2, C = 2, D = -1; let projection = projectPointToPlane(a, b, c, A, B, C, D); projection;"
         }
     },
-    {
     "nhóm 2": {
         "bài 1": {
             "Name": "Bài toán số 1",
             "code": "function gcd(a, b) { while (b) { let temp = b; b = a % b; a = temp; } return a; } function simplifyFraction(numerator, denominator) { const divisor = gcd(numerator, denominator); const simplifiedNumerator = numerator / divisor; const simplifiedDenominator = denominator / divisor; return `\\\\frac{${simplifiedNumerator}}{${simplifiedDenominator}}`; } function projectPointToPlane(a, b, c, A, B, C, D) { let distance1 = (A * a + B * b + C * c + D); let distance2 = (A * A + B * B + C * C); let x_tu = a * distance2 - A * distance1; let y_tu = b * distance2 - B * distance1; let z_tu = c * distance2 - C * distance1; let x = simplifyFraction(x_tu, distance2); let y = simplifyFraction(y_tu, distance2); let z = simplifyFraction(z_tu, distance2); return { x: x, y: y, z: z }; } let a = 1, b = 2, c = 0; let A = 2, B = -2, C = 2, D = -1; let projection = projectPointToPlane(a, b, c, A, B, C, D); projection;"
         }
     }
-}
-
 }
