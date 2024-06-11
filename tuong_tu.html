@@ -163,8 +163,12 @@
             let questions = "";
             for (let i = 0; i < numOfQuestions; i++) {
                 selectedFunctions.forEach(func => {
-                    const result = eval(`(function() { ${func.code} })()`);
-                    questions += `Hàm: ${func.name}\nKết quả: ${JSON.stringify(result, null, 2)}\n\n`;
+                    try {
+                        const result = eval(`(function() { ${func.code} })()`);
+                        questions += `Hàm: ${func.name}\nKết quả: ${JSON.stringify(result, null, 2)}\n\n`;
+                    } catch (error) {
+                        questions += `Hàm: ${func.name}\nLỗi: ${error.message}\n\n`;
+                    }
                 });
             }
 
