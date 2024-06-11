@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaTeX ID Structure Viewer</title>
+    <style>
+        body {
+            display: flex;
+        }
+        #tree-container {
+            width: 30%;
+            border-right: 1px solid #ccc;
+            padding: 10px;
+        }
+        #result-container {
+            width: 70%;
+            padding: 10px;
+        }
+        .directory, .file {
+            cursor: pointer;
+            padding: 5px;
+        }
+        .directory {
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="tree-container"></div>
+    <div id="result-container"></div>
+    <script src="script.js"></script>
+</body>
+</html>
