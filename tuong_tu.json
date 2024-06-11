@@ -1,22 +1,8 @@
 {
-    "Nhóm Góc": {
-        "Góc giữa hai vectơ": {
-            "code": "function gocVecto(a, b, c, d, e, f) { const dot_product = a * d + b * e + c * f; const norm_vector1 = Math.sqrt(a ** 2 + b ** 2 + c ** 2); const norm_vector2 = Math.sqrt(d ** 2 + e ** 2 + f ** 2); const cos_theta = dot_product / (norm_vector1 * norm_vector2); return cos_theta; }",
-            "description": "Tính góc giữa hai vectơ."
-        },
-        "Góc giữa hai vectơ tổng đại số": {
-            "code": "function gocGttd(a, b, c, d, e, f) { const dot_product = Math.abs(a * d + b * e + c * f); const norm_vector1 = Math.sqrt(a ** 2 + b ** 2 + c ** 2); const norm_vector2 = Math.sqrt(d ** 2 + e ** 2 + f ** 2); const cos_theta = dot_product / (norm_vector1 * norm_vector2); return cos_theta; }",
-            "description": "Tính góc giữa hai vectơ tổng đại số."
-        }
-    },
-    "Hàm Phân Thức": {
-        "Hàm phân thức hai trên một": {
-            "code": "function hamPhanThucHaiTrenMot() { while (true) { const a = Math.floor(Math.random() * 10) + 1; const c = Math.floor(Math.random() * 21) - 10; const d = Math.floor(Math.random() * 10) + 1; const e = Math.floor(Math.random() * 21) - 10; const discriminantCandidate = Math.floor(Math.random() * 100) + 1; const k = Math.floor(Math.sqrt(discriminantCandidate)); const discriminant = k * k; if (discriminant % 4 !== 0) { continue; } const bSquared = 3 * a * c + Math.floor(discriminant / 4); if (bSquared >= 0 && Math.sqrt(bSquared) % 1 === 0) { const b = Math.sqrt(bSquared); return [a, b, c, d, e]; } } }",
-            "description": "Tạo hệ số ngẫu nhiên cho hàm phân thức hai trên một."
-        },
-        "Hàm phân thức hai trên một có cực trị": {
-            "code": "function hamPhanThucHaiTrenMotDdCucTri(k) { let [a, b, c, d, e] = hamPhanThucHaiTrenMot(); e = e + k; const x = math.symbols('x'); const f = (a * x ** 2 + b * x + c) / (d * x + e); const df = math.derivative(f, x); const criticalPoints = math.solve(df, x); if (criticalPoints.length !== 2 || !criticalPoints.every(p => math.isInteger(p))) { return hamPhanThucHaiTrenMotDdCucTri(k); } const [x1, x2] = criticalPoints.sort((a, b) => a - b); const f_x1 = math.eval(f, { x: x1 }); const f_x2 = math.eval(f, { x: x2 }); const decreasingInterval = `(${x2}, +∞)`; const areaTriangle = math.abs(x1 * f_x2 - x2 * f_x1) / 2; const diem_cd = `(${x1}, ${f_x1})`; const diem_ct = `(${x2}, ${f_x2})`; const slope = (f_x2 - f_x1) / (x2 - x1); const intercept = f_x1 - slope * x1; const lineEq = `${slope}x + ${intercept}`; const distance_AB = math.sqrt((x2 - x1) ** 2 + (f_x2 - f_x1) ** 2); const C_x = math.symbols('C_x'); const C_y = math.symbols('C_y'); const distance_to_line = math.abs(slope * C_x - C_y + intercept) / math.sqrt(slope ** 2 + 1); const distanceToLine = math.eval(distance_to_line, { C_x: c, C_y: d }); const OA = math.sqrt(x1 ** 2 + f_x1 ** 2); const OB = math.sqrt(x2 ** 2 + f_x2 ** 2); const R = OA * OB * distance_AB / (4 * areaTriangle); const bankinh = R; const areaCircumcircle = math.pi * R ** 2; const s = (OA + OB + distance_AB) / 2; const r = areaTriangle / s; const areaIncircle = math.pi * r ** 2; return { decreasingInterval, areaTriangle, diem_cd, diem_ct, lineEq, distance_AB, distanceToLine, bankinh, areaCircumcircle, areaIncircle }; }",
-            "description": "Tạo hệ số ngẫu nhiên cho hàm phân thức hai trên một có cực trị."
+    "nhóm 1": {
+        "bài 1": {
+            "Name": "Bài toán số 1",
+            "code": "function gcd(a, b) { while (b) { let temp = b; b = a % b; a = temp; } return a; } function simplifyFraction(numerator, denominator) { const divisor = gcd(numerator, denominator); const simplifiedNumerator = numerator / divisor; const simplifiedDenominator = denominator / divisor; return `\\\\frac{${simplifiedNumerator}}{${simplifiedDenominator}}`; } function projectPointToPlane(a, b, c, A, B, C, D) { let distance1 = (A * a + B * b + C * c + D); let distance2 = (A * A + B * B + C * C); let x_tu = a * distance2 - A * distance1; let y_tu = b * distance2 - B * distance1; let z_tu = c * distance2 - C * distance1; let x = simplifyFraction(x_tu, distance2); let y = simplifyFraction(y_tu, distance2); let z = simplifyFraction(z_tu, distance2); return { x: x, y: y, z: z }; } let a = 1, b = 2, c = 0; let A = 2, B = -2, C = 2, D = -1; let projection = projectPointToPlane(a, b, c, A, B, C, D); projection;"
         }
     }
 }
