@@ -104,10 +104,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.0/math.min.js"></script>
     <script>
         let selectedFunctions = [];
+        let allFunctions = {};
 
         async function fetchJson() {
             const response = await fetch('tuong_tu.json');
             const data = await response.json();
+            allFunctions = data.functions;
             buildTree(data);
         }
 
@@ -161,9 +163,11 @@
             }
 
             let questions = "";
+            const functionString = Object.values(allFunctions).join('\n');
+
             for (let i = 0; i < numOfQuestions; i++) {
                 selectedFunctions.forEach(func => {
-                    const result = eval(`(function() { ${func.code} })()`);
+                    const result = eval(`(function() { ${functionString} ${func.code} })()`);
                     questions += `Hàm: ${func.name}\nKết quả: ${JSON.stringify(result, null, 2)}\n\n`;
                 });
             }
@@ -177,7 +181,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'result.txt';
+            a.download = 'result.tex';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
