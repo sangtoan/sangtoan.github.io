@@ -105,7 +105,7 @@ function hoanViCauTruc(text) {
 
     function processGroup(group) {
         return group.map(sentence => {
-            let indexChoice = sentence.search(/\\choice|\\choiceTF|\\choiceTFt|\\choiceTF\[t\]|\\choiceTF\[n\]/);
+            let indexChoice = sentence.search(/\\choice|\\motcot|\\haicot|\\choice\[2\]|\\choiceTF|\\choiceTFt|\\choiceTF\[t\]|\\choiceTF\[n\]/);
             if (indexChoice !== -1) {
                 let noiDungTruocChoice = sentence.slice(0, indexChoice);
                 let noiDungSauChoice = sentence.slice(indexChoice);
@@ -136,14 +136,18 @@ function generateFiles(content, numFiles, hoanViType) {
 
     for (let i = 0; i < numFiles; i++) {
         let resultContent;
+        let hoanViKetQua;
+
         if (hoanViType === 'ngoac') {
-            resultContent = hoanViNgoacLonNgauNhien(content);
+            hoanViKetQua = hoanViNgoacLonNgauNhien(content);
         } else if (hoanViType === 'cau_truc') {
-            resultContent = hoanViCauTruc(content);
+            hoanViKetQua = hoanViCauTruc(content);
         }
-        
+
+        resultContent = `\\subsection*{PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countChoice}}. Mỗi câu hỏi thí sinh chỉ chọn một phương án.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanI]\n${hoanViKetQua.groupChoice}\n\\Closesolutionfile{ans}\n\\subsection*{PHẦN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countchoiceTF}}. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanII]\n${hoanViKetQua.groupchoiceTF}\n\n\\Closesolutionfile{ans}\n\\subsection*{PHẦN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countNone}.}\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanIII]\n${hoanViKetQua.groupNone}\n\n\\Closesolutionfile{ans}\n\\newpage\n\\begin{center}\n\\textbf{\\large BẢNG ĐÁP ÁN}\n\\end{center}\n\\noindent\\textbf{A. ĐÁP ÁN PHẦN I}\n\\inputansbox{10}{ans/ans-phanI}\n\\noindent\\textbf{B. ĐÁP ÁN PHẦN II}\n\\inputansbox[2]{2}{ans/ans-phanII}\n\\noindent\\textbf{C. ĐÁP ÁN PHẦN III}\n\\inputansbox[3]{6}{ans/ans-phanIII}`;
+
         results.push({
-            content: `\\subsection*{PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Thí sinh trả lời từ câu 1 đến câu ${resultContent.countChoice}}. Mỗi câu hỏi thí sinh chỉ chọn một phương án.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanI]\n${resultContent.groupChoice}\n\\Closesolutionfile{ans}\n\\subsection*{PHẦN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu 1 đến câu ${resultContent.countchoiceTF}}. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanII]\n${resultContent.groupchoiceTF}\n\n\\Closesolutionfile{ans}\n\\subsection*{PHẦN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 1 đến câu ${resultContent.countNone}.}\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanIII]\n${resultContent.groupNone}\n\n\\Closesolutionfile{ans}\n\\newpage\n\\begin{center}\n\\textbf{\\large BẢNG ĐÁP ÁN}\n\\end{center}\n\\noindent\\textbf{A. ĐÁP ÁN PHẦN I}\n\\inputansbox{10}{ans/ans-phanI}\n\\noindent\\textbf{B. ĐÁP ÁN PHẦN II}\n\\inputansbox[2]{2}{ans/ans-phanII}\n\\noindent\\textbf{C. ĐÁP ÁN PHẦN III}\n\\inputansbox[3]{6}{ans/ans-phanIII}`,
+            content: resultContent,
             download_url: `data:text/plain;charset=utf-8,${encodeURIComponent(resultContent)}`
         });
     }
@@ -185,4 +189,10 @@ $(document).ready(function () {
             let resultHtml = `
                 <h3>File ${index + 1}</h3>
                 <textarea class="form-control mb-3" rows="10" readonly>${result.content}</textarea>
-                <a href="${result.download_url}" class="btn btn-success mb-3" download="hoan
+                <a href="${result.download_url}" class="btn btn-success mb-3" download="hoanvi_${index + 1}.tex">Tải về file đã hoán vị</a>
+            `;
+            $('#results').append(resultHtml);
+        });
+        $('#resultSection').show();
+    }
+});
