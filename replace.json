@@ -14,5 +14,5 @@
     {"find": "Ta có:", "replace": "Ta có"},
     {"find": "ta có:", "replace": "ta có"},
     {"find": "Ta có :", "replace": "Ta có "},
-    {"find": "\\\\frac", "replace": "\\\\dfrac"}
+    {"find": "\\\\frac", "replace": "\\dfrac"}
 ]
