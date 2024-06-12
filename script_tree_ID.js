@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', function () {
     treeContainer.appendChild(choiceTFContainer);
     treeContainer.appendChild(othersContainer);
 
+    const resultContainer = document.getElementById('result-container');
+
     console.log('Loading tex_files.json...');
     fetch('tex_files.json')
         .then(response => response.json())
@@ -35,9 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('ChoiceTF tree:', choiceTFTree);
                 console.log('Others tree:', othersTree);
 
-                buildTreeView(choiceContainer, choiceTree, 'Choice Questions');
-                buildTreeView(choiceTFContainer, choiceTFTree, 'True/False Questions');
-                buildTreeView(othersContainer, othersTree, 'Other Questions');
+                buildTreeView(choiceContainer, choiceTree, 'Trắc Nghiệm');
+                buildTreeView(choiceTFContainer, choiceTFTree, 'Câu True/False');
+                buildTreeView(othersContainer, othersTree, 'Câu Tự Luận');
             });
         }).catch(error => {
             console.error('Error loading file list:', error);
@@ -131,18 +133,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function displayFileContent(file) {
-        const resultContainer = document.getElementById('result-container');
         const fileContentDiv = document.createElement('div');
         fileContentDiv.className = 'file-content';
         fileContentDiv.innerHTML = `
             <h2>${file.id}</h2>
             <pre>${file.content}</pre>
+            <button class="copy-btn">Copy</button>
             <button class="close-btn">X</button>
         `;
+        fileContentDiv.querySelector('.copy-btn').addEventListener('click', () => {
+            copyToClipboard(file.content);
+        });
         fileContentDiv.querySelector('.close-btn').addEventListener('click', () => {
             resultContainer.removeChild(fileContentDiv);
         });
         resultContainer.appendChild(fileContentDiv);
+    }
+
+    function copyToClipboard(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('Copied to clipboard');
     }
 
     function fetchFileContent(path) {
@@ -161,5 +176,27 @@ document.addEventListener('DOMContentLoaded', function () {
             };
             request.send();
         });
+    }
+
+    const downloadButton = document.createElement('button');
+    downloadButton.textContent = 'Download All';
+    downloadButton.addEventListener('click', downloadAllFiles);
+    document.body.appendChild(downloadButton);
+
+    function downloadAllFiles() {
+        let allContent = '';
+        const fileContents = document.querySelectorAll('.file-content pre');
+        fileContents.forEach(pre => {
+            allContent += pre.textContent + '\n\n';
+        });
+
+        const blob = new Blob([allContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'all_questions.tex';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     }
 });
