@@ -20,7 +20,6 @@
     {"find": "\\simeq", "replace": " \\approx "},
     {"find": "\\sim", "replace": " \\backsim "},
     {"find": "\\phi", "replace": "\\varnothing"},
-    {"find": "lim_", "replace": "lim\\limits_"},
     {"find": " \\limits", "replace": "\\limits"},
     {"find": "\\rightarrow", "replace": " \\to "},
     {"find": "\\in D", "replace": "\\in \\mathscr{D}"},
