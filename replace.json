@@ -13,5 +13,6 @@
     {"find": "O x y", "replace": "Oxy"},
     {"find": "Ta có:", "replace": "Ta có"},
     {"find": "ta có:", "replace": "ta có"},
-    {"find": "Ta có :", "replace": "Ta có "}
+    {"find": "Ta có :", "replace": "Ta có "},
+    {"find": "\\\\frac", "replace": "\\\\dfrac"}
 ]
