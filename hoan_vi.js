@@ -1,4 +1,3 @@
-// hoan_vi.js
 function layCacNgoacLon(text) {
     let ngoacLon = [];
     let demNgoac = 0;
@@ -24,43 +23,23 @@ function layCacNgoacLon(text) {
     return ngoacLon;
 }
 
-function phanLoaiVaHoanVi(elements) {
-    let groupY = [], groupB = [], groupK = [], groupG = [], groupT = [];
+function hoanViCacNgoacLon(noiDung) {
+    let cacVitriNgoacLon = layCacNgoacLon(noiDung).slice(0, 4);
 
-    elements.forEach(element => {
-        let group = 'Y'; // Mặc định là Y
-        let groupMatches = element.match(/\[[0-9][A-Z][0-9]([YBKGTNHVC])[0-9]-[0-9]]/);
-        if (groupMatches) {
-            group = groupMatches[1];
-        }
+    if (cacVitriNgoacLon.length === 4) {
+        let cacNgoacLonGoc = cacVitriNgoacLon.map(([dau, cuoi]) => noiDung.slice(dau, cuoi + 1));
+        let cacNgoacLonHoanVi = [...cacNgoacLonGoc];
+        cacNgoacLonHoanVi.sort(() => Math.random() - 0.5);
 
-        if (['Y', 'N'].includes(group)) {
-            groupY.push(element);
-        } else if (['B', 'H'].includes(group)) {
-            groupB.push(element);
-        } else if (['K', 'V'].includes(group)) {
-            groupK.push(element);
-        } else if (['G', 'C'].includes(group)) {
-            groupG.push(element);
-        } else if (group === 'T') {
-            groupT.push(element);
-        }
-    });
+        cacNgoacLonGoc.forEach((goc, index) => {
+            noiDung = noiDung.replace(goc, cacNgoacLonHoanVi[index]);
+        });
+    }
 
-    // Trộn lẫn nội dung
-    groupY = groupY.sort(() => Math.random() - 0.5);
-    groupB = groupB.sort(() => Math.random() - 0.5);
-    groupK = groupK.sort(() => Math.random() - 0.5);
-    groupG = groupG.sort(() => Math.random() - 0.5);
-    groupT = groupT.sort(() => Math.random() - 0.5);
-
-    // Ghép nối nội dung
-    return groupY.concat(groupB, groupK, groupG, groupT).join('');
+    return noiDung;
 }
 
 function hoanViNgoacLonNgauNhien(text) {
-    text = text.replace('choiceTF', 'choiceTF');
-
     let sentences = text.match(/\\begin{ex}[\s\S]+?\\end{ex}/g);
 
     let groupChoice = [];
@@ -79,23 +58,13 @@ function hoanViNgoacLonNgauNhien(text) {
 
     function processGroup(group) {
         return group.map(sentence => {
-            if (sentence.includes("choice")) {
-                let indexChoice = sentence.indexOf('\\choice');
+            let indexChoice = sentence.search(/\\choice|\\choiceTF|\\choiceTFt|\\choiceTF\[t\]|\\choiceTF\[n\]/);
+            if (indexChoice !== -1) {
                 let noiDungTruocChoice = sentence.slice(0, indexChoice);
                 let noiDungSauChoice = sentence.slice(indexChoice);
-                let cacVitriNgoacLon = layCacNgoacLon(noiDungSauChoice).slice(0, 4);
+                noiDungSauChoice = hoanViCacNgoacLon(noiDungSauChoice);
 
-                if (cacVitriNgoacLon.length === 4) {
-                    let cacNgoacLonGoc = cacVitriNgoacLon.map(([dau, cuoi]) => noiDungSauChoice.slice(dau, cuoi + 1));
-                    let cacNgoacLonHoanVi = [...cacNgoacLonGoc];
-                    cacNgoacLonHoanVi.sort(() => Math.random() - 0.5);
-
-                    cacNgoacLonGoc.forEach((goc, index) => {
-                        noiDungSauChoice = noiDungSauChoice.replace(goc, cacNgoacLonHoanVi[index]);
-                    });
-
-                    return noiDungTruocChoice + noiDungSauChoice;
-                }
+                return noiDungTruocChoice + noiDungSauChoice;
             }
             return sentence;
         });
@@ -104,10 +73,6 @@ function hoanViNgoacLonNgauNhien(text) {
     groupChoice = processGroup(groupChoice);
     groupchoiceTF = processGroup(groupchoiceTF);
     groupNone = processGroup(groupNone);
-
-    groupChoice = groupChoice.map(sentence => sentence.replace('choiceTF', 'choiceTF'));
-    groupchoiceTF = groupchoiceTF.map(sentence => sentence.replace('choiceTF', 'choiceTF'));
-    groupNone = groupNone.map(sentence => sentence.replace('choiceTF', 'choiceTF'));
 
     return {
         groupChoice: groupChoice.join('\n'),
@@ -121,7 +86,7 @@ function hoanViNgoacLonNgauNhien(text) {
 
 function hoanViCauTruc(text) {
     let hoanViKetQua = hoanViNgoacLonNgauNhien(text);
-    return `\\subsection*{PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countChoice}}. Mỗi câu hỏi thí sinh chỉ chọn một phương án.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanI]\n${hoanViKetQua.groupChoice}\n\\Closesolutionfile{ans}\n\\subsection*{PHẦN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countchoiceTF}}. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanII]\n${hoanViKetQua.groupchoiceTF}\n\n\Closesolutionfile{ans}\n\\subsection*{PHẦN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countNone}.}\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanIII]\n${hoanViKetQua.groupNone}\n\n\\Closesolutionfile{ans}\n\\newpage\n\\begin{center}\n\\textbf{\\large BẢNG ĐÁP ÁN}\n\\end{center}\n\\noindent\\textbf{A. ĐÁP ÁN PHẦN I}\n\\inputansbox{10}{ans/ans-phanI}\n\\noindent\\textbf{B. ĐÁP ÁN PHẦN II}\n\\inputansbox[2]{2}{ans/ans-phanII}\n\\noindent\\textbf{C. ĐÁP ÁN PHẦN III}\n\\inputansbox[3]{6}{ans/ans-phanIII}`;
+    return `\\subsection*{PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countChoice}}. Mỗi câu hỏi thí sinh chỉ chọn một phương án.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanI]\n${hoanViKetQua.groupChoice}\n\\Closesolutionfile{ans}\n\\subsection*{PHẦN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countchoiceTF}}. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanII]\n${hoanViKetQua.groupchoiceTF}\n\n\\Closesolutionfile{ans}\n\\subsection*{PHẦN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 1 đến câu ${hoanViKetQua.countNone}.}\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanIII]\n${hoanViKetQua.groupNone}\n\n\\Closesolutionfile{ans}\n\\newpage\n\\begin{center}\n\\textbf{\\large BẢNG ĐÁP ÁN}\n\\end{center}\n\\noindent\\textbf{A. ĐÁP ÁN PHẦN I}\n\\inputansbox{10}{ans/ans-phanI}\n\\noindent\\textbf{B. ĐÁP ÁN PHẦN II}\n\\inputansbox[2]{2}{ans/ans-phanII}\n\\noindent\\textbf{C. ĐÁP ÁN PHẦN III}\n\\inputansbox[3]{6}{ans/ans-phanIII}`;
 }
 
 $(document).ready(function () {
