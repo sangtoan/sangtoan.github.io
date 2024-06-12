@@ -180,9 +180,14 @@ $(document).ready(function () {
     });
 
     function displayResults(results) {
-        $('#results').empty();
-        results.forEach(function(result, index) {
-            let resultHtml = `
-                <h3>File ${index + 1}</h3>
-                <textarea class="form-control mb-3" rows="10" readonly>${result.content}</textarea>
-                <a href="${result.download_url}" class="btn btn-success mb-3" download="hoan
+    $('#results').empty();
+    results.forEach(function(result, index) {
+        let resultHtml = `
+            <h3>File ${index + 1}</h3>
+            <textarea class="form-control mb-3" rows="10" readonly>${result.content}</textarea>
+            <a href="${result.download_url}" class="btn btn-success mb-3" download="hoan_vip_file_${index + 1}.txt">Download File</a>
+        `;
+        $('#results').append(resultHtml);
+    });
+}
+
