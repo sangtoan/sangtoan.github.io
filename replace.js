@@ -8,6 +8,50 @@ function convertNumberToMathMode(text) {
     });
 }
 
+function processCurlyBraces(inputString) {
+    const pattern = /\{\s*([^\s])\s*\}/g;
+    return inputString.replace(pattern, (match, content) => `{${content}}`);
+}
+
+function convertStructure(inputString) {
+    const pattern = /\\left\\{\\begin{array}{l}(.*?)\\end{array}\s*(.*?)\\right\.\s*\\right\./gs;
+    return inputString.replace(pattern, (match, content, c3) => {
+        return `\\left\\{\\begin{array}{l} ${content} \\end{array}\\right.${c3}\\right.`;
+    });
+}
+
+function convertToHeva(inputString) {
+    const pattern = /\\left\s*\\{\\begin{array}{l}(.*?)\\end{array}\s*\\right./gs;
+    return inputString.replace(pattern, (match, content) => {
+        const lines = content.split('\\\\').map(line => `& ${line.trim()}`);
+        return `\\heva{\n${lines.join(' \\\\\n')} }`;
+    });
+}
+
+function convertToHevatex1(inputString) {
+    const pattern = /\\left\\{\\begin{array}{l}(.*?)\\end{array}(.+?)\\right./gs;
+    return inputString.replace(pattern, (match, content, c3) => {
+        const lines = content.split('\\\\').map(line => `& ${line.trim()}`);
+        return `\\heva{\n${lines.join(' \\\\\n')}} ${c3}`;
+    });
+}
+
+function convertToHoac(inputString) {
+    const pattern = /\\left\s*\\begin{array}{l}(.*?)\\end{array}\s*\\right./gs;
+    return inputString.replace(pattern, (match, content) => {
+        const lines = content.split('\\\\').map(line => `& ${line.trim()}`);
+        return `\\hoac{\n${lines.join(' \\\\\n')} }`;
+    });
+}
+
+function convertToHoactex1(inputString) {
+    const pattern = /\\left\\begin{array}{l}(.*?)\\end{array}(.+?)\\right./gs;
+    return inputString.replace(pattern, (match, content, c3) => {
+        const lines = content.split('\\\\').map(line => `& ${line.trim()}`);
+        return `\\hoac{\n${lines.join(' \\\\\n')}} ${c3}`;
+    });
+}
+
 function replaceTextWithJson(data, text) {
     data.forEach(item => {
         const findText = item.find;
@@ -18,16 +62,26 @@ function replaceTextWithJson(data, text) {
     return text;
 }
 
+function applyResubFromJson(filePath, text) {
+    return fetch(filePath)
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                const findText = item.find;
+                const replaceText = item.replace;
+                const regex = new RegExp(findText, 'gm');
+                text = text.replace(regex, replaceText);
+            });
+            return text;
+        })
+        .catch(error => console.error('Error:', error));
+}
+
 function word2tex() {
     let inputCode = document.getElementById('inputCode').value;
     inputCode = inputCode.replace(/\\mathrm{R}/g, '\\mathbb{R}');
     inputCode = convertNumberToMathMode(inputCode);
     inputCode = inputCode.replace(/}\s*{/g, '}{');
-    inputCode = inputCode.replace(/\$\\underline{\\mathbf{([A-D])}}\\cdot/g, '$1. \\True $');
-    inputCode = inputCode.replace(/Lời Giải/g, 'Lời giải');
-    inputCode = inputCode.replace(/Hướng dẫn giải|Hướng Dẫn Giải|HDG|LỜI GIẢI/g, 'Lời giải');
-    inputCode = inputCode.replace(/Bài\s+(\d+)[. :]/g, 'Câu $1:');
-    inputCode = inputCode.replace(/Ví dụ\s+(\d+)[. :]|Ví Dụ\s+(\d+)[. :]/g, 'Câu $1:');
 
     fetch('replace.json')
         .then(response => response.json())
@@ -43,9 +97,6 @@ function wordtotex() {
     inputCode = inputCode.replace(/\\mathrm{R}/g, '\\mathbb{R}');
     inputCode = convertNumberToMathMode(inputCode);
     inputCode = inputCode.replace(/}\s*{/g, '}{');
-    inputCode = inputCode.replace(/Bài\s+(\d+)[. :]/g, 'Câu $1:');
-    inputCode = inputCode.replace(/Ví dụ\s+(\d+)[. :]|Ví Dụ\s+(\d+)[. :]/g, 'Câu $1:');
-    inputCode = inputCode.replace(/Lời Giải|Hướng dẫn giải|Hướng Dẫn Giải|HDG|LỜI GIẢI/g, 'Lời giải');
 
     fetch('replace.json')
         .then(response => response.json())
