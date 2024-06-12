@@ -72,7 +72,7 @@ function hoanViNgoacLonNgauNhien(text) {
 
     groupChoice = processGroup(groupChoice);
     groupchoiceTF = processGroup(groupchoiceTF);
-    groupNone = processGroup(groupNone);
+    groupNone = groupNone.map(sentence => sentence); // giữ nguyên
 
     return {
         groupChoice: groupChoice.join('\n'),
@@ -131,6 +131,26 @@ function hoanViCauTruc(text) {
     };
 }
 
+function generateFiles(content, numFiles, hoanViType) {
+    let results = [];
+
+    for (let i = 0; i < numFiles; i++) {
+        let resultContent;
+        if (hoanViType === 'ngoac') {
+            resultContent = hoanViNgoacLonNgauNhien(content);
+        } else if (hoanViType === 'cau_truc') {
+            resultContent = hoanViCauTruc(content);
+        }
+        
+        results.push({
+            content: `\\subsection*{PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Thí sinh trả lời từ câu 1 đến câu ${resultContent.countChoice}}. Mỗi câu hỏi thí sinh chỉ chọn một phương án.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanI]\n${resultContent.groupChoice}\n\\Closesolutionfile{ans}\n\\subsection*{PHẦN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu 1 đến câu ${resultContent.countchoiceTF}}. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanII]\n${resultContent.groupchoiceTF}\n\n\\Closesolutionfile{ans}\n\\subsection*{PHẦN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 1 đến câu ${resultContent.countNone}.}\n\\setcounter{ex}{0}\n\\Opensolutionfile{ans}[ans/ans-phanIII]\n${resultContent.groupNone}\n\n\\Closesolutionfile{ans}\n\\newpage\n\\begin{center}\n\\textbf{\\large BẢNG ĐÁP ÁN}\n\\end{center}\n\\noindent\\textbf{A. ĐÁP ÁN PHẦN I}\n\\inputansbox{10}{ans/ans-phanI}\n\\noindent\\textbf{B. ĐÁP ÁN PHẦN II}\n\\inputansbox[2]{2}{ans/ans-phanII}\n\\noindent\\textbf{C. ĐÁP ÁN PHẦN III}\n\\inputansbox[3]{6}{ans/ans-phanIII}`,
+            download_url: `data:text/plain;charset=utf-8,${encodeURIComponent(resultContent)}`
+        });
+    }
+
+    return results;
+}
+
 $(document).ready(function () {
     $('#uploadForm').on('submit', function (e) {
         e.preventDefault();
@@ -143,21 +163,7 @@ $(document).ready(function () {
             let reader = new FileReader();
             reader.onload = function (event) {
                 let content = event.target.result;
-                let results = [];
-
-                for (let i = 0; i < numFiles; i++) {
-                    let resultContent;
-                    if (hoanViType === 'ngoac') {
-                        resultContent = hoanViNgoacLonNgauNhien(content).groupChoice;
-                    } else if (hoanViType === 'cau_truc') {
-                        resultContent = hoanViCauTruc(content).groupChoice + '\n' + hoanViCauTruc(content).groupchoiceTF + '\n' + hoanViCauTruc(content).groupNone;
-                    }
-                    results.push({
-                        content: resultContent,
-                        download_url: `data:text/plain;charset=utf-8,${encodeURIComponent(resultContent)}`
-                    });
-                }
-
+                let results = generateFiles(content, numFiles, hoanViType);
                 displayResults(results);
             };
             reader.readAsText(file);
@@ -169,21 +175,7 @@ $(document).ready(function () {
         let content = $('#pasteContent').val();
         let numFiles = $('#numPasteFiles').val();
         let hoanViType = $('#hoanViTypePaste').val();
-        let results = [];
-
-        for (let i = 0; i < numFiles; i++) {
-            let resultContent;
-            if (hoanViType === 'ngoac') {
-                resultContent = hoanViNgoacLonNgauNhien(content).groupChoice;
-            } else if (hoanViType === 'cau_truc') {
-                resultContent = hoanViCauTruc(content).groupChoice + '\n' + hoanViCauTruc(content).groupchoiceTF + '\n' + hoanViCauTruc(content).groupNone;
-            }
-            results.push({
-                content: resultContent,
-                download_url: `data:text/plain;charset=utf-8,${encodeURIComponent(resultContent)}`
-            });
-        }
-
+        let results = generateFiles(content, numFiles, hoanViType);
         displayResults(results);
     });
 
@@ -193,10 +185,4 @@ $(document).ready(function () {
             let resultHtml = `
                 <h3>File ${index + 1}</h3>
                 <textarea class="form-control mb-3" rows="10" readonly>${result.content}</textarea>
-                <a href="${result.download_url}" class="btn btn-success mb-3" download="hoanvi_${index + 1}.tex">Tải về file đã hoán vị</a>
-            `;
-            $('#results').append(resultHtml);
-        });
-        $('#resultSection').show();
-    }
-});
+                <a href="${result.download_url}" class="btn btn-success mb-3" download="hoan
