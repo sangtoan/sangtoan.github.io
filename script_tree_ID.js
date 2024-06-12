@@ -1,6 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     const treeContainer = document.getElementById('tree-container');
 
+    // Tạo các phần riêng biệt cho các loại câu hỏi khác nhau
+    const choiceContainer = document.createElement('div');
+    choiceContainer.id = 'choice-container';
+    const choiceTFContainer = document.createElement('div');
+    choiceTFContainer.id = 'choiceTF-container';
+    const othersContainer = document.createElement('div');
+    othersContainer.id = 'others-container';
+
+    treeContainer.appendChild(choiceContainer);
+    treeContainer.appendChild(choiceTFContainer);
+    treeContainer.appendChild(othersContainer);
+
     console.log('Loading tex_files.json...');
     fetch('tex_files.json')
         .then(response => response.json())
@@ -8,25 +20,33 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Files:', files);
             const fetchedFiles = [];
 
-            files.forEach(file => {
+            let filePromises = files.map(file => 
                 fetchFileContent(file).then(content => {
                     console.log('Fetched content for:', file);
                     fetchedFiles.push({ path: file, content: content });
-                    if (fetchedFiles.length === files.length) {
-                        const treeData = buildTree(fetchedFiles);
-                        console.log('Tree structure:', treeData);  // Ghi lại cấu trúc cây
-                        buildTreeView(treeContainer, treeData);
-                    }
                 }).catch(error => {
                     console.error('Error fetching file:', file, error);
-                });
+                })
+            );
+
+            Promise.all(filePromises).then(() => {
+                const { choiceTree, choiceTFTree, othersTree } = buildTrees(fetchedFiles);
+                console.log('Choice tree:', choiceTree);  
+                console.log('ChoiceTF tree:', choiceTFTree);
+                console.log('Others tree:', othersTree);
+
+                buildTreeView(choiceContainer, choiceTree, 'Choice Questions');
+                buildTreeView(choiceTFContainer, choiceTFTree, 'True/False Questions');
+                buildTreeView(othersContainer, othersTree, 'Other Questions');
             });
         }).catch(error => {
             console.error('Error loading file list:', error);
         });
 
-    function buildTree(files) {
-        const tree = {};
+    function buildTrees(files) {
+        const choiceTree = {};
+        const choiceTFTree = {};
+        const othersTree = {};
 
         files.forEach(file => {
             const exPattern = /\\begin{ex}.*?\\end{ex}/gs;
@@ -36,9 +56,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 const element = match[0];
                 const idMatch = idPattern.exec(element);
                 if (idMatch) {
-                    let id = idMatch[0].replace(/[\[\]-]/g, ''); // Loại bỏ dấu gạch nối và dấu ngoặc để hiển thị gọn
+                    const id = idMatch[0].replace(/[\[\]-]/g, ''); // Loại bỏ dấu gạch nối và dấu ngoặc để hiển thị gọn
                     const parts = id.split('');
-                    let current = tree;
+                    let currentTree;
+
+                    if (element.includes('choice')) {
+                        currentTree = choiceTree;
+                    } else if (element.includes('choicTF')) {
+                        currentTree = choiceTFTree;
+                    } else {
+                        currentTree = othersTree;
+                    }
+
+                    let current = currentTree;
                     parts.forEach((part, index) => {
                         if (!current[part]) {
                             current[part] = { _files: [] };
@@ -52,14 +82,21 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        console.log('Tree structure:', tree);
-        return tree;
+        return { choiceTree, choiceTFTree, othersTree };
     }
 
-    function buildTreeView(container, data, parentKey = '') {
+    function buildTreeView(container, data, title) {
+        const titleEl = document.createElement('h2');
+        titleEl.textContent = title;
+        container.appendChild(titleEl);
+
         const ul = document.createElement('ul');
         container.appendChild(ul);
 
+        buildTreeBranch(ul, data);
+    }
+
+    function buildTreeBranch(container, data) {
         for (const key in data) {
             if (key === '_files') {
                 data[key].forEach(file => {
@@ -69,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     fileLi.addEventListener('click', () => {
                         displayFileContent(file);
                     });
-                    ul.appendChild(fileLi);
+                    container.appendChild(fileLi);
                 });
             } else {
                 const dirLi = document.createElement('li');
@@ -86,9 +123,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const childUl = document.createElement('ul');
                 childUl.classList.add('hidden');
-                buildTreeView(childUl, data[key], parentKey + key);
+                buildTreeBranch(childUl, data[key]);
                 dirLi.appendChild(childUl);
-                ul.appendChild(dirLi);
+                container.appendChild(dirLi);
             }
         }
     }
