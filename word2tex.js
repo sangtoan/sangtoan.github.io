@@ -49,7 +49,7 @@ export function word2tex() {
     // Thay thế ký hiệu toán học
     outputCode = outputCode.replace(/\\mathrm{R}/g, '\\mathbb{R}');
     outputCode = convertNumberToMathMode(outputCode);
-    outputCode = outputCode.replace(/}\s*{/g, '}{');
+    //outputCode = outputCode.replace(/}\s*{/g, '}{');
 
     fetch('replace.json')
         .then(response => response.json())
