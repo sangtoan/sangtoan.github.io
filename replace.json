@@ -17,14 +17,14 @@
     {"find": "\\\\frac", "replace": "\\dfrac"},
     {"find": "ABC\\cdot", "replace": "ABC."},
     {"find": "ABCD\\cdot", "replace": "ABCD."},    
-    {"find": "\\\\simeq", "replace": " \\approx "},
-    {"find": "\\\\sim", "replace": " \\backsim "},
+    {"find": "\\simeq", "replace": " \\approx "},
+    {"find": "\\sim", "replace": " \\backsim "},
     {"find": "\\phi", "replace": "\\varnothing"},
     {"find": " \\limits", "replace": "\\limits"},
     {"find": "\\\\rightarrow", "replace": " \\to "},
-    {"find": "\\in D", "replace": "\\in \\mathscr{D}"},
+    {"find": "\\\\in D", "replace": "\\in \\mathscr{D}"},
     {"find": "\\notin D", "replace": "\\notin \\mathscr{D}"},
-    {"find": "\\backslash", "replace": " \\setminus "},
+    {"find": "backslash", "replace": " setminus "},
     {"find": "mathrm{d}", "replace": "\\mathrm{\\,d}"},
     {"find": " / / ", "replace": " \\parallel "}
 ]
