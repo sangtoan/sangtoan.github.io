@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const treeContainer = document.getElementById('tree-container');
 
-    // Tạo các phần riêng biệt cho các loại câu hỏi khác nhau
     const choiceContainer = document.createElement('div');
     choiceContainer.id = 'choice-container';
     const choiceTFContainer = document.createElement('div');
@@ -16,14 +15,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const resultContainer = document.getElementById('result-container');
 
     console.log('Loading tex_files.json...');
-    fetch('tex_files.json')
+    fetch('public/tex_files.json')
         .then(response => response.json())
         .then(files => {
             console.log('Files:', files);
             const fetchedFiles = [];
 
             let filePromises = files.map(file => 
-                fetchFileContent(file).then(content => {
+                fetchFileContent(`public/${file}`).then(content => {
                     console.log('Fetched content for:', file);
                     fetchedFiles.push({ path: file, content: content });
                 }).catch(error => {
