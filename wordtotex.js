@@ -7,10 +7,10 @@ export function wordtotex() {
     let errors = [];
 
     // Chuyển đổi cấu trúc câu hỏi tự luận
-    const questionPattern = /Câu (\d+)[.:]?\s?\(([\d\D]+?)\)\s*([\s\S]*?)(?=\nCâu \d|$)/g;
+    const questionPattern = /Câu (\d+)\s*[\.\:\:]{0,1}\s*\(([\d\D]+?)\)\s*([\s\S]*?)(?=\nCâu \d|$)/g;
     outputCode = inputCode.replace(questionPattern, (match, num, points, questionContent) => {
         // Chuyển đổi các mục a), b), ... hoặc 1), 2), ... thành \item
-        const itemPattern = /^[a-z]\)|[a-z]\.|^\d\)|\d\./gm;
+        const itemPattern = /(^[a-z]\)|^[a-z]\.|^\d\)|^\d\.)/gm;
         const formattedContent = questionContent.replace(itemPattern, '\\item');
 
         let result = `%% Câu ${num}:\n\\begin{ex}(${points})\n\\begin{enumerate}\n${formattedContent}\n\\end{enumerate}\n\\loigiai{\n}\n\\end{ex}\n`;
@@ -20,7 +20,7 @@ export function wordtotex() {
     // Thay thế ký hiệu toán học
     outputCode = outputCode.replace(/\\mathrm{R}/g, '\\mathbb{R}');
     outputCode = convertNumberToMathMode(outputCode);
-    //outputCode = outputCode.replace(/}\s*{/g, '}{');
+    outputCode = outputCode.replace(/}\s*{/g, '}{');
 
     fetch('replace.json')
         .then(response => response.json())
