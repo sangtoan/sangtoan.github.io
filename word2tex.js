@@ -5,8 +5,8 @@ export function word2tex() {
     let inputCode = document.getElementById('inputCode').value;
 
     // Chuyển đổi cấu trúc câu hỏi và đáp án
-    const questionPattern = /Câu (\d+):([\s\S]*?)\nA\.\s*(.*?)\nB\.\s*(.*?)\nC\.\s*(.*?)\nD\.\s*(.*?)(\nLời giải([\s\S]*?))?\n/g;
-    inputCode = inputCode.replace(questionPattern, (match, num, questionContent, choiceA, choiceB, choiceC, choiceD, solutionMatch, solution) => {
+    const questionPattern = /Câu (\d+):([\s\S]*?)(?:\nA\.\s*(.*?)\nB\.\s*(.*?)\nC\.\s*(.*?)\nD\.\s*(.*?))(?:\nLời giải([\s\S]*?))?(?=\nCâu \d|$)/g;
+    inputCode = inputCode.replace(questionPattern, (match, num, questionContent, choiceA, choiceB, choiceC, choiceD, solution) => {
         let result = `%% Câu ${num}:\n\\begin{ex}\n${questionContent.trim()}\n\\choice\n{${choiceA.trim()}}\n{${choiceB.trim()}}\n{${choiceC.trim()}}\n{${choiceD.trim()}}\n\\loigiai{\n${solution ? solution.trim() : ''}\n}\n\\end{ex}\n`;
         return result;
     });
