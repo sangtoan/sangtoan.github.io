@@ -7,7 +7,7 @@ export function word2tex() {
     let errors = [];
 
     // Chuyển đổi cấu trúc câu hỏi và đáp án
-    const questionPattern = /Câu (\d+):([\s\S]*?)(?:\nA\.\s*(.*?)\nB\.\s*(.*?)\nC\.\s*(.*?)\nD\.\s*(.*?))?(?:\nLời giải([\s\S]*?))?(?=\nCâu \d|$)/g;
+    const questionPattern = /Câu (\d+)[.\: ]?([\s\S]*?)(?:\nA\.\s*(.*?)\nB\.\s*(.*?)\nC\.\s*(.*?)\nD\.\s*(.*?))?(?:\nLời giải([\s\S]*?))?(?=\nCâu \d|$)/g;
     outputCode = inputCode.replace(questionPattern, (match, num, questionContent, choiceA, choiceB, choiceC, choiceD, solution) => {
         let errorHighlight = "";
         let errorFlag = false;
