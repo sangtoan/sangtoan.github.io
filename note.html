@@ -37,8 +37,8 @@
             background-color: #ddd;
             color: black;
         }
-        #note-container, #login-container {
-            display: none;
+        #note-container {
+            display: flex;
             flex-direction: column;
             align-items: center;
             background: rgba(255, 255, 255, 0.8);
@@ -48,20 +48,18 @@
             width: 90%;
             max-width: 1000px;
         }
-        #note-container textarea, #login-container input {
+        #note-container textarea {
             width: 100%;
+            height: 70vh;
             padding: 10px;
             font-size: 16px;
         }
-        #note-container textarea {
-            height: 70vh; /* Khung ghi chú cao gần cả màn hình */
-        }
-        #note-container .button-container, #login-container button {
+        #note-container .button-container {
             display: flex;
             justify-content: space-between;
             width: 100%;
         }
-        #note-container button, #login-container button {
+        #note-container button {
             padding: 10px;
             font-size: 16px;
             background-color: #007bff;
@@ -75,28 +73,23 @@
         #note-container button:last-child {
             margin-right: 0;
         }
-        #note-container button:hover, #login-container button:hover {
+        #note-container button:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="menu">
-        <a href="index.html">Home</a>
-        <a href="#contact">Contact</a>
+        <a href="index.html">Home</a>        
         <a href="tron_de.html">Trộn Đề</a>
         <a href="fixcode.html">Fix Code</a>
         <a href="find_latex.html">Tìm Kiếm</a>
         <a href="Ve_hinh.html">Vẽ Hình</a>
         <a href="tuong_tu.html">Đề Tương Tự</a>
         <a href="menu_tree.html">Menu ID</a>
-        <a href="not.html">Ghi Chú</a>
-    </div>
-
-    <div id="login-container">
-        <h2>Nhập Mật Khẩu</h2>
-        <input type="password" id="password" placeholder="Mật Khẩu" />
-        <button onclick="checkPassword()">Xác Nhận</button>
+        <a href="note.html">Ghi Chú</a>
+        <a href="symbols.html">symbols</a>
+        <a href="contact.html">Tác giả</a>
     </div>
 
     <div id="note-container">
@@ -108,22 +101,25 @@
     </div>
 
     <script>
-        const correctPassword = "sangnhc"; // Thay "yourpassword" bằng mật khẩu bạn muốn
+        // Temporarily disable the login functionality
+        // const correctPassword = "sangnhc"; // Thay "yourpassword" bằng mật khẩu bạn muốn
 
         document.addEventListener('DOMContentLoaded', (event) => {
-            document.getElementById('login-container').style.display = 'flex';
+            // document.getElementById('login-container').style.display = 'flex';
+            document.getElementById('note-container').style.display = 'flex';
+            document.getElementById('note').value = localStorage.getItem('note') || '';
         });
 
-        function checkPassword() {
-            const password = document.getElementById('password').value;
-            if (password === correctPassword) {
-                document.getElementById('login-container').style.display = 'none';
-                document.getElementById('note-container').style.display = 'flex';
-                document.getElementById('note').value = localStorage.getItem('note') || '';
-            } else {
-                alert('Mật khẩu không đúng!');
-            }
-        }
+        // function checkPassword() {
+        //     const password = document.getElementById('password').value;
+        //     if (password === correctPassword) {
+        //         document.getElementById('login-container').style.display = 'none';
+        //         document.getElementById('note-container').style.display = 'flex';
+        //         document.getElementById('note').value = localStorage.getItem('note') || '';
+        //     } else {
+        //         alert('Mật khẩu không đúng!');
+        //     }
+        // }
 
         function saveNote() {
             const note = document.getElementById('note').value;
