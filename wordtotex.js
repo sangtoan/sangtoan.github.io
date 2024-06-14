@@ -20,16 +20,16 @@ export function wordtotex() {
             questionText = questionContent.replace(solutionPattern, '').trim();
         }
 
-        // Tách nội dung câu hỏi chính và các mục a., b., c., d.
-        //const parts = questionText.split(/\n(?=[a-z]\.\s)/);
+        // Tách nội dung câu hỏi chính và các mục a., b., c., d. hoặc 1., 2., 3., 1), 2), 3)
         const parts = questionText.split(/\n(?=[a-z]\.|[a-z]\)|\d+\.\s|\d+\)\s)/i);
         let formattedContent = parts.shift().trim();
 
-        // Nếu có các mục a., b., c., d., chuyển đổi chúng thành \item
+        // Nếu có các mục a., b., c., d., chuyển đổi chúng thành \item và loại bỏ ký tự a., b., c., d. sau \item
         if (parts.length > 0) {
             formattedContent += "\n\\begin{enumerate}";
             parts.forEach(part => {
-                formattedContent += `\n\\item ${part.trim()}`;
+                const cleanPart = part.replace(/^[a-z]\.|[a-z]\)|\d+\.\s|\d+\)\s/, '').trim();
+                formattedContent += `\n\\item ${cleanPart}`;
             });
             formattedContent += "\n\\end{enumerate}";
         }
