@@ -21,15 +21,15 @@ export function wordtotex() {
         }
 
         // Chuyển đổi các mục a), b), ... hoặc 1), 2), ... thành \item
-        const itemPattern = /^([a-z]\.|[a-z]\)|\d\.\s|\d\)\s)/gim;
-        const formattedContent = questionText.replace(itemPattern, '\\item ');
+        const itemPattern = /^([a-z]\.|[a-z]\)|\d\.\s|\d\)\s)/gm;
+        let formattedContent = questionText.replace(itemPattern, '\\item ');
 
-        let result;
+        // Đặt \begin{enumerate} trước mục đầu tiên \item nếu có các mục này
         if (itemPattern.test(questionText)) {
-            result = `%% Câu ${num}:\n\\begin{ex}\n\\begin{enumerate}\n${formattedContent}\n\\end{enumerate}\n\\loigiai{\n${solutionText}\n}\n\\end{ex}\n`;
-        } else {
-            result = `%% Câu ${num}:\n\\begin{ex}\n${formattedContent}\n\\loigiai{\n${solutionText}\n}\n\\end{ex}\n`;
+            formattedContent = `\\begin{enumerate}\n${formattedContent}\n\\end{enumerate}`;
         }
+
+        let result = `%% Câu ${num}:\n\\begin{ex}\n${formattedContent}\n\\loigiai{\n${solutionText}\n}\n\\end{ex}\n`;
         return result;
     });
 
