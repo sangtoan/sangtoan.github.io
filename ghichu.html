@@ -121,34 +121,54 @@
         const db = getFirestore(app);
 
         // Functions to handle note actions
-        window.saveNote = async function() {
+        async function saveNote() {
             const noteContent = document.getElementById('note').value;
-            await setDoc(doc(db, "notes", "note1"), {
-                content: noteContent
-            });
-            alert('Ghi chú đã được lưu!');
-        }
-
-        window.loadNote = async function() {
-            const docRef = doc(db, "notes", "note1");
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                document.getElementById('note').value = docSnap.data().content;
-            } else {
-                console.log("No such document!");
+            try {
+                await setDoc(doc(db, "notes", "note1"), {
+                    content: noteContent
+                });
+                alert('Ghi chú đã được lưu!');
+            } catch (error) {
+                console.error("Error saving note: ", error);
+                alert('Có lỗi xảy ra khi lưu ghi chú!');
             }
         }
 
-        window.clearNote = async function() {
+        async function loadNote() {
+            const docRef = doc(db, "notes", "note1");
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    document.getElementById('note').value = docSnap.data().content;
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.error("Error loading note: ", error);
+                alert('Có lỗi xảy ra khi tải ghi chú!');
+            }
+        }
+
+        async function clearNote() {
             document.getElementById('note').value = '';
-            await deleteDoc(doc(db, "notes", "note1"));
-            alert('Ghi chú đã được xóa!');
+            try {
+                await deleteDoc(doc(db, "notes", "note1"));
+                alert('Ghi chú đã được xóa!');
+            } catch (error) {
+                console.error("Error deleting note: ", error);
+                alert('Có lỗi xảy ra khi xóa ghi chú!');
+            }
         }
 
         // Load the note on page load
         document.addEventListener('DOMContentLoaded', (event) => {
-            window.loadNote();
+            loadNote();
         });
+
+        // Gán các hàm vào đối tượng window để có thể truy cập từ onclick
+        window.saveNote = saveNote;
+        window.clearNote = clearNote;
+        window.loadNote = loadNote;
     </script>
 </body>
 </html>
