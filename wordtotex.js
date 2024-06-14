@@ -1,48 +1,23 @@
 import { convertNumberToMathMode } from './numberUtils.js';
 import { replaceTextWithJson } from './replaceUtils.js';
 
-export function word2tex() {
+export function wordtotex() {
     let inputCode = document.getElementById('inputCode').value;
     let outputCode = "";
-    let errors = [];
 
-    // Chuyển đổi cấu trúc câu hỏi và đáp án
+    // Chuyển đổi cấu trúc câu hỏi tự luận
     const questionPattern = /Câu (\d+)[.:\s]+([\s\S]*?)(?:\na\.\s*(.*?)\nb\.\s*(.*?)\nc\.\s*(.*?)\nd\.\s*(.*?))?(?:\nLời giải([\s\S]*?))?(?=\nCâu \d|$)/g;
     outputCode = inputCode.replace(questionPattern, (match, num, questionContent, choiceA, choiceB, choiceC, choiceD, solution) => {
-        let errorHighlight = "";
-        let errorFlag = false;
+        // Chuyển đổi các mục a), b), ... thành \item
+        const itemPattern = /^(a\.\s|b\.\s|c\.\s|d\.\s)/gm;
+        let formattedContent = questionContent.replace(itemPattern, '\\item ');
 
-        if (!choiceA) {
-            errorFlag = true;
-            errorHighlight += `A (missing) `;
-        } else {
-            errorHighlight += `A. ${choiceA.trim()} `;
-        }
-        if (!choiceB) {
-            errorFlag = true;
-            errorHighlight += `B (missing) `;
-        } else {
-            errorHighlight += `B. ${choiceB.trim()} `;
-        }
-        if (!choiceC) {
-            errorFlag = true;
-            errorHighlight += `C (missing) `;
-        } else {
-            errorHighlight += `C. ${choiceC.trim()} `;
-        }
-        if (!choiceD) {
-            errorFlag = true;
-            errorHighlight += `D (missing) `;
-        } else {
-            errorHighlight += `D. ${choiceD.trim()} `;
+        let result;
+        if (choiceA && choiceB && choiceC && choiceD) {
+            formattedContent = `\\begin{enumerate}\n\\item ${choiceA.trim()}\n\\item ${choiceB.trim()}\n\\item ${choiceC.trim()}\n\\item ${choiceD.trim()}\n\\end{enumerate}`;
         }
 
-        if (errorFlag) {
-            errors.push(`Câu ${num} lỗi sau: ${errorHighlight}`);
-            return match;
-        }
-
-        let result = `%% Câu ${num}:\n\\begin{ex}\n${questionContent.trim()}\n\\choice\n\\item\n{${choiceA.trim()}}\n\\item\n{${choiceB.trim()}}\n\\item\n{${choiceC.trim()}}\n\\item\n{${choiceD.trim()}}\n\\loigiai{\n${solution ? solution.trim() : ''}\n}\n\\end{ex}\n`;
+        result = `%% Câu ${num}:\n\\begin{ex}\n${formattedContent}\n\\loigiai{\n${solution ? solution.trim() : ''}\n}\n\\end{ex}\n`;
         return result;
     });
 
@@ -56,9 +31,6 @@ export function word2tex() {
         .then(data => {
             outputCode = replaceTextWithJson(data, outputCode);
             document.getElementById('outputCode').value = outputCode;
-            if (errors.length > 0) {
-                alert("Các lỗi sau cần được sửa:\n" + errors.join("\n"));
-            }
         })
         .catch(error => console.error('Error:', error));
 }
