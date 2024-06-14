@@ -63,6 +63,10 @@
         import { wordtotex } from './wordtotex.js';
         import { word2tex } from './word2tex.js';
         import { fixCode } from './fixCode.js';
+        // Gắn các hàm vào window để có thể gọi từ HTML
+        window.wordtotex = wordtotex;
+        window.word2tex = word2tex;
+        window.fixCode = fixCode;
     </script>
 </body>
 </html>
