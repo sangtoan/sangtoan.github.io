@@ -28,5 +28,6 @@
     {"find": "backslash", "replace": " setminus "},
     {"find": "mathrm{d}", "replace": "\\mathrm{\\,d}"},
     {"find": " / / ", "replace": " \\parallel "},
-    {"find": "\\^\\{\\\\prime\\}", "replace": "'"}
+    {"find": "\\^\\{\\\\prime\\}", "replace": "'"},
+    {"find": "\\$D=", "replace": "\\$\\mathscr{D}="}
 ]
