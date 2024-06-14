@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Render TikZ with MathJax and TikzJax</title>
+    <title>Render TikZ with MathJax</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,11 +36,10 @@
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tikzjax@1.0.0/tikzjax.min.js"></script>
     <script>
-        MathJax = {
+        window.MathJax = {
             tex: {
-                packages: {'[+]': ['base', 'ams', 'amscd', 'bbox', 'boldsymbol', 'braket', 'bussproofs', 'cancel', 'color', 'colortbl', 'empheq', 'extpfeil', 'gensymb', 'html', 'mhchem', 'noerrors', 'noundefined', 'physics', 'require', 'upgreek', 'verb', 'xypic', 'tikz']},
+                packages: {'[+]': ['base', 'ams', 'newcommand', 'require', 'autoload', 'configMacros', 'configTeX', 'verb', 'noerrors', 'noundefined', 'bbox', 'color', 'colortbl', 'enclose', 'extpfeil', 'html', 'mhchem', 'unicode', 'mathtools', 'tikz', 'upgreek', 'gensymb', 'cancel', 'colorV2']},
                 tikz: {
                     libraries: {
                         'arrows.meta': ['arrows', 'arrows.spaced', 'arrows.meta', 'arrows.meta.spaced'],
@@ -57,12 +56,15 @@
                     }
                 }
             },
-            loader: {load: ['[tex]/tikz']}
+            loader: {load: ['[tex]/require', '[tex]/tikz']},
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
         };
     </script>
 </head>
 <body>
-    <h1>Render TikZ with MathJax and TikzJax</h1>
+    <h1>Render TikZ with MathJax</h1>
     <textarea id="latex-code" placeholder="Enter LaTeX code with TikZ here...">
 \begin{tikzpicture}
   \draw[thick] (0,0) -- (4,0);
@@ -87,10 +89,8 @@
         document.getElementById('render-button').addEventListener('click', () => {
             const latexCode = document.getElementById('latex-code').value;
             const renderedLatex = document.getElementById('rendered-latex');
-            renderedLatex.innerHTML = `\\[${latexCode}\\]`;
-            MathJax.typesetPromise([renderedLatex]).then(() => {
-                tikzjax.render(renderedLatex.querySelectorAll("svg"));
-            }).catch((err) => console.log(err.message));
+            renderedLatex.innerHTML = `$$${latexCode}$$`;
+            MathJax.typesetPromise([renderedLatex]).catch((err) => console.log(err.message));
         });
 
         document.getElementById('clear-button').addEventListener('click', () => {
