@@ -79,6 +79,34 @@
             background-color: #0056b3;
         }
     </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="#contact">Contact</a>
+        <a href="tron_de.html">Trộn Đề</a>
+        <a href="fixcode.html">Fix Code</a>
+        <a href="find_latex.html">Tìm Kiếm</a>
+        <a href="Ve_hinh.html">Vẽ Hình</a>
+        <a href="tuong_tu.html">Đề Tương Tự</a>
+        <a href="menu_tree.html">Menu ID</a>
+        <a href="ghichu.html">Ghi Chú</a>
+    </div>
+
+    <div id="login-container">
+        <h2>Nhập Mật Khẩu</h2>
+        <input type="password" id="password" placeholder="Mật Khẩu" />
+        <button onclick="checkPassword()">Xác Nhận</button>
+    </div>
+
+    <div id="note-container">
+        <textarea id="note" placeholder="Ghi chú của bạn..."></textarea>
+        <div class="button-container">
+            <button onclick="saveNote()">Lưu Ghi Chú</button>
+            <button onclick="clearNote()">Xóa Ghi Chú</button>
+        </div>
+    </div>
+
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -141,32 +169,5 @@
             document.getElementById('login-container').style.display = 'flex';
         });
     </script>
-</head>
-<body>
-    <div class="menu">
-        <a href="index.html">Home</a>
-        <a href="#contact">Contact</a>
-        <a href="tron_de.html">Trộn Đề</a>
-        <a href="fixcode.html">Fix Code</a>
-        <a href="find_latex.html">Tìm Kiếm</a>
-        <a href="Ve_hinh.html">Vẽ Hình</a>
-        <a href="tuong_tu.html">Đề Tương Tự</a>
-        <a href="menu_tree.html">Menu ID</a>
-        <a href="ghichu.html">Ghi Chú</a>
-    </div>
-
-    <div id="login-container">
-        <h2>Nhập Mật Khẩu</h2>
-        <input type="password" id="password" placeholder="Mật Khẩu" />
-        <button onclick="checkPassword()">Xác Nhận</button>
-    </div>
-
-    <div id="note-container">
-        <textarea id="note" placeholder="Ghi chú của bạn..."></textarea>
-        <div class="button-container">
-            <button onclick="saveNote()">Lưu Ghi Chú</button>
-            <button onclick="clearNote()">Xóa Ghi Chú</button>
-        </div>
-    </div>
 </body>
 </html>
