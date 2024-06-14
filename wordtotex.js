@@ -7,7 +7,7 @@ export function wordtotex() {
     let errors = [];
 
     // Chuyển đổi cấu trúc câu hỏi tự luận
-    const questionPattern = /Câu (\d+)[.:\s]+([\s\S]*?)(?=\nCâu \d|$)/gm;
+    const questionPattern = /Câu (\d+)[.:\s]+([\s\S]*?)(?=\nCâu \d|$)/g;
     outputCode = inputCode.replace(questionPattern, (match, num, questionContent) => {
         // Tách nội dung câu hỏi và lời giải
         const solutionPattern = /Lời giải([\s\S]*)/i;
@@ -20,14 +20,15 @@ export function wordtotex() {
             questionText = questionContent.replace(solutionPattern, '').trim();
         }
 
-        // Chuẩn bị khung câu hỏi và lời giải
-        let result = `%% Câu ${num}:\n\\begin{ex}\n${questionText}\n\\loigiai{\n${solutionText}\n}\n\\end{ex}\n`;
-
-        // Chuyển đổi các mục a), b), ... hoặc 1), 2), ... thành \item nếu có
+        // Chuyển đổi các mục a), b), ... hoặc 1), 2), ... thành \item
         const itemPattern = /^([a-z]\.|[a-z]\)|\d\.\s|\d\)\s)/gim;
+        const formattedContent = questionText.replace(itemPattern, '\\item ');
+
+        let result;
         if (itemPattern.test(questionText)) {
-            const formattedContent = questionText.replace(itemPattern, '\\item ');
             result = `%% Câu ${num}:\n\\begin{ex}\n\\begin{enumerate}\n${formattedContent}\n\\end{enumerate}\n\\loigiai{\n${solutionText}\n}\n\\end{ex}\n`;
+        } else {
+            result = `%% Câu ${num}:\n\\begin{ex}\n${formattedContent}\n\\loigiai{\n${solutionText}\n}\n\\end{ex}\n`;
         }
         return result;
     });
