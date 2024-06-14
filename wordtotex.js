@@ -21,8 +21,8 @@ export function wordtotex() {
         }
 
         // Chuyển đổi các mục a), b), ... hoặc 1), 2), ... thành \item
-        const itemPattern = /^[a-z]\.|[a-z]\)/gm;
-        const formattedContent = questionText.replace(itemPattern, '\\item');
+        const itemPattern = /^(a\)|a\.|1\)|1\.)\s+/gm;
+        const formattedContent = questionText.replace(itemPattern, '\\item ');
 
         let result;
         if (itemPattern.test(questionText)) {
