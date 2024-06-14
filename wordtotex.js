@@ -7,10 +7,10 @@ export function wordtotex() {
     let errors = [];
 
     // Chuyển đổi cấu trúc câu hỏi tự luận
-    const questionPattern = /Câu (\d+)[.:\s]+([\s\S]*?)(?=\nCâu \d|$)/gm;
+    const questionPattern = /Câu (\d+)[.:\s]+([\s\S]*?)(?=(?:\nCâu \d|$))/gm;
     outputCode = inputCode.replace(questionPattern, (match, num, questionContent) => {
         // Tách nội dung câu hỏi và lời giải
-        const solutionPattern = /Lời giải([\s\S]*)/;
+        const solutionPattern = /Lời giải([\s\S]*)/i;
         let solutionText = "";
         let questionText = questionContent;
 
@@ -21,7 +21,7 @@ export function wordtotex() {
         }
 
         // Chuyển đổi các mục a), b), ... hoặc 1), 2), ... thành \item
-        const itemPattern = /^(a\)|a\.|1\)|1\.)\s+/gm;
+        const itemPattern = /^([a-z]\.|[a-z]\)|\d\.\s|\d\)\s)/gim;
         const formattedContent = questionText.replace(itemPattern, '\\item ');
 
         let result;
