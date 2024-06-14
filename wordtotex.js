@@ -7,23 +7,28 @@ export function wordtotex() {
     let errors = [];
 
     // Chuyển đổi cấu trúc câu hỏi tự luận
-    const questionPattern = /Câu (\d+)[.:\s]+([\s\S]*?)(?=\nCâu \d|$)/gm;
-    outputCode = inputCode.replace(questionPattern, (match, num, questionContent) => {
+    const questionPattern = /Câu (\d+)[.:\s]+(?:\(([\d\D]+?)\))?\s*([\s\S]*?)(?=(?:\nCâu \d|$))/gm;
+    outputCode = inputCode.replace(questionPattern, (match, num, points, questionContent) => {
         // Nhận diện điểm số nếu có
         const pointsPattern = /\(([\d.]+ điểm)\)/;
-        let points = "";
+        let pointsText = points ? `(${points})` : "";
+
+        // Tách nội dung câu hỏi và lời giải
+        const solutionPattern = /Lời giải([\s\S]*)/;
+        let solutionText = "";
         let questionText = questionContent;
-        const pointsMatch = questionContent.match(pointsPattern);
-        if (pointsMatch) {
-            points = pointsMatch[1];
-            questionText = questionContent.replace(pointsPattern, '').trim();
+
+        const solutionMatch = questionContent.match(solutionPattern);
+        if (solutionMatch) {
+            solutionText = solutionMatch[1].trim();
+            questionText = questionContent.replace(solutionPattern, '').trim();
         }
 
         // Chuyển đổi các mục a), b), ... hoặc 1), 2), ... thành \item
-        const itemPattern = /^[a-z]\)|[a-z]\.|^\d\)|\d\./gm;
+        const itemPattern = /^[a-z]\)|[a-z]\.|^\d\)|^\d\./gm;
         const formattedContent = questionText.replace(itemPattern, '\\item');
 
-        let result = `%% Câu ${num}:\n\\begin{ex}${points ? `(${points})` : ''}\n\\begin{enumerate}\n${formattedContent}\n\\end{enumerate}\n\\loigiai{\n}\n\\end{ex}\n`;
+        let result = `%% Câu ${num}:\n\\begin{ex}${pointsText}\n\\begin{enumerate}\n${formattedContent}\n\\end{enumerate}\n\\loigiai{\n${solutionText}\n}\n\\end{ex}\n`;
         return result;
     });
 
