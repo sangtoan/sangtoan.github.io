@@ -32,11 +32,11 @@
             color: white;
             text-align: center;
             padding: 14px 16px;
-            text-decoration: none.
+            text-decoration: none;
         }
         .menu a:hover {
             background-color: #ddd;
-            color: black.
+            color: black;
         }
         #note-container {
             display: flex;
@@ -47,18 +47,18 @@
             border-radius: 10px;
             margin-top: 50px;
             width: 90%;
-            max-width: 1000px.
+            max-width: 1000px;
         }
         #note-container textarea {
             width: 100%;
             height: 70vh; /* Khung ghi chú cao gần cả màn hình */
             padding: 10px;
-            font-size: 16px.
+            font-size: 16px;
         }
         #note-container .button-container {
             display: flex;
             justify-content: space-between;
-            width: 100%.
+            width: 100%;
         }
         #note-container button {
             padding: 10px;
@@ -69,13 +69,13 @@
             cursor: pointer;
             margin-top: 10px;
             flex: 1;
-            margin-right: 10px.
+            margin-right: 10px;
         }
         #note-container button:last-child {
-            margin-right: 0.
+            margin-right: 0;
         }
         #note-container button:hover {
-            background-color: #0056b3.
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -121,7 +121,7 @@
         const db = getFirestore(app);
 
         // Functions to handle note actions
-        async function saveNote() {
+        window.saveNote = async function() {
             const noteContent = document.getElementById('note').value;
             await setDoc(doc(db, "notes", "note1"), {
                 content: noteContent
@@ -129,7 +129,7 @@
             alert('Ghi chú đã được lưu!');
         }
 
-        async function loadNote() {
+        window.loadNote = async function() {
             const docRef = doc(db, "notes", "note1");
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
@@ -139,7 +139,7 @@
             }
         }
 
-        async function clearNote() {
+        window.clearNote = async function() {
             document.getElementById('note').value = '';
             await deleteDoc(doc(db, "notes", "note1"));
             alert('Ghi chú đã được xóa!');
