@@ -1,6 +1,7 @@
 [
     {"find": "mathrm{R}", "replace": "mathbb{R}"},
     {"find": "Lời Giải", "replace": "Lời giải"},
+    {"find": "Lò̀i giải", "replace": "Lời giải"},
     {"find": "Hướng dẫn giải", "replace": "Lời giải"},
     {"find": "Hướng Dẫn Giải", "replace": "Lời giải"},
     {"find": "HDG", "replace": "Lời giải"},
