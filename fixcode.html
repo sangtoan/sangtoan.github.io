@@ -50,10 +50,6 @@
             <button class="btn btn-success" onclick="fixCode()">Fix Mathpix</button>
         </div>
         <div class="form-group mt-3">
-            <label for="useChoice">Sử dụng \itemchoice và \begin{enumchoice}:</label>
-            <input type="checkbox" id="useChoice">
-        </div>
-        <div class="form-group mt-3">
             <label for="inputCode">Dán mã cần sửa:</label>
             <textarea class="form-control" id="inputCode" rows="10"></textarea>
         </div>
@@ -67,7 +63,6 @@
         import { wordtotex } from './wordtotex.js';
         import { word2tex } from './word2tex.js';
         import { fixCode } from './fixCode.js';
-
         // Gắn các hàm vào window để có thể gọi từ HTML
         window.wordtotex = wordtotex;
         window.word2tex = word2tex;
