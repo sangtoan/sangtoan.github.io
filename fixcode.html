@@ -45,8 +45,8 @@
     <div class="container">
         <h1>Fix Code</h1>
         <div class="buttons">
-            <button class="btn btn-primary" onclick="word2tex()">Chuyển Câu Trắc Nghiệm</button>
-            <button class="btn btn-secondary" onclick="wordtotex()">Chuyển Câu Tự Luận</button>
+            <button class="btn btn-primary" onclick="wordtotex()">Chuyển Câu Trắc Nghiệm</button>
+            <button class="btn btn-secondary" onclick="word2tex()">Chuyển Câu Tự Luận</button>
             <button class="btn btn-success" onclick="fixCode()">Fix Mathpix</button>
         </div>
         <div class="form-group mt-3">
@@ -59,17 +59,10 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script type="module">
-        import { word2tex } from './word2tex.js';
         import { wordtotex } from './wordtotex.js';
+        import { word2tex } from './word2tex.js';
         import { fixCode } from './fixCode.js';
-
-        window.word2tex = word2tex;
-        window.wordtotex = wordtotex;
-        window.fixCode = fixCode;
     </script>
 </body>
 </html>
