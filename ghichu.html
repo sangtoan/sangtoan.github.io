@@ -32,14 +32,14 @@
             color: white;
             text-align: center;
             padding: 14px 16px;
-            text-decoration: none;
+            text-decoration: none.
         }
         .menu a:hover {
             background-color: #ddd;
-            color: black;
+            color: black.
         }
-        #note-container, #login-container {
-            display: none;
+        #note-container {
+            display: flex;
             flex-direction: column;
             align-items: center;
             background: rgba(255, 255, 255, 0.8);
@@ -47,22 +47,20 @@
             border-radius: 10px;
             margin-top: 50px;
             width: 90%;
-            max-width: 1000px;
-        }
-        #note-container textarea, #login-container input {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
+            max-width: 1000px.
         }
         #note-container textarea {
+            width: 100%;
             height: 70vh; /* Khung ghi chú cao gần cả màn hình */
+            padding: 10px;
+            font-size: 16px.
         }
-        #note-container .button-container, #login-container button {
+        #note-container .button-container {
             display: flex;
             justify-content: space-between;
-            width: 100%;
+            width: 100%.
         }
-        #note-container button, #login-container button {
+        #note-container button {
             padding: 10px;
             font-size: 16px;
             background-color: #007bff;
@@ -71,13 +69,13 @@
             cursor: pointer;
             margin-top: 10px;
             flex: 1;
-            margin-right: 10px;
+            margin-right: 10px.
         }
         #note-container button:last-child {
-            margin-right: 0;
+            margin-right: 0.
         }
-        #note-container button:hover, #login-container button:hover {
-            background-color: #0056b3;
+        #note-container button:hover {
+            background-color: #0056b3.
         }
     </style>
 </head>
@@ -92,12 +90,6 @@
         <a href="tuong_tu.html">Đề Tương Tự</a>
         <a href="menu_tree.html">Menu ID</a>
         <a href="ghichu.html">Ghi Chú</a>
-    </div>
-
-    <div id="login-container">
-        <h2>Nhập Mật Khẩu</h2>
-        <input type="password" id="password" placeholder="Mật Khẩu" />
-        <button onclick="checkPassword()">Xác Nhận</button>
     </div>
 
     <div id="note-container">
@@ -153,21 +145,9 @@
             alert('Ghi chú đã được xóa!');
         }
 
-        // Check password and load note
-        function checkPassword() {
-            const correctPassword = "sangnhc";
-            const password = document.getElementById('password').value;
-            if (password === correctPassword) {
-                document.getElementById('login-container').style.display = 'none';
-                document.getElementById('note-container').style.display = 'flex';
-                loadNote();
-            } else {
-                alert('Mật khẩu không đúng!');
-            }
-        }
-
+        // Load the note on page load
         document.addEventListener('DOMContentLoaded', (event) => {
-            document.getElementById('login-container').style.display = 'flex';
+            loadNote();
         });
     </script>
 </body>
