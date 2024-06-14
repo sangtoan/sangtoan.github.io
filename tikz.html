@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Render TikZ with MathJax</title>
+    <title>Render TikZ with QuickLaTeX</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,39 +33,18 @@
             margin-top: 20px;
             min-height: 100px;
         }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-    <script>
-        window.MathJax = {
-            tex: {
-                packages: {'[+]': ['base', 'ams', 'newcommand', 'require', 'autoload', 'configMacros', 'configTeX', 'verb', 'noerrors', 'noundefined', 'bbox', 'color', 'colortbl', 'enclose', 'extpfeil', 'html', 'mhchem', 'unicode', 'mathtools', 'tikz', 'upgreek', 'gensymb', 'cancel', 'colorV2']},
-                tikz: {
-                    libraries: {
-                        'arrows.meta': ['arrows', 'arrows.spaced', 'arrows.meta', 'arrows.meta.spaced'],
-                        'decorations.markings': ['decorations', 'decorations.markings', 'decorations.pathmorphing', 'decorations.pathreplacing'],
-                        'patterns': ['patterns', 'patterns.meta'],
-                        'plotmarks': ['plotmarks', 'plotmarks.meta'],
-                        'positioning': ['positioning', 'positioning.meta'],
-                        'shapes': ['shapes', 'shapes.misc', 'shapes.multipart'],
-                        'shapes.arrows': ['shapes.arrows'],
-                        'shapes.callouts': ['shapes.callouts'],
-                        'shapes.gates': ['shapes.gates.logic.US', 'shapes.gates.logic.IEC'],
-                        'shapes.symbols': ['shapes.symbols'],
-                        'trees': ['trees']
-                    }
-                }
-            },
-            loader: {load: ['[tex]/require', '[tex]/tikz']},
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']]
-            }
-        };
-    </script>
 </head>
 <body>
-    <h1>Render TikZ with MathJax</h1>
+    <h1>Render TikZ with QuickLaTeX</h1>
     <textarea id="latex-code" placeholder="Enter LaTeX code with TikZ here...">
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
 \begin{tikzpicture}
   \draw[thick] (0,0) -- (4,0);
   \draw[thick] (0,0) -- (0,4);
@@ -78,6 +57,7 @@
   \draw[thick] (0,2) -- (4,2);
   \node at (-0.5,2) {$0$};
 \end{tikzpicture}
+\end{document}
     </textarea>
     <div class="buttons">
         <button id="render-button">Render</button>
@@ -89,8 +69,9 @@
         document.getElementById('render-button').addEventListener('click', () => {
             const latexCode = document.getElementById('latex-code').value;
             const renderedLatex = document.getElementById('rendered-latex');
-            renderedLatex.innerHTML = `$$${latexCode}$$`;
-            MathJax.typesetPromise([renderedLatex]).catch((err) => console.log(err.message));
+            const encodedCode = encodeURIComponent(latexCode);
+            const url = `https://quicklatex.com/latex3.f/latex.php?bg=transparent&src=${encodedCode}`;
+            renderedLatex.innerHTML = `<img src="${url}" alt="Rendered LaTeX">`;
         });
 
         document.getElementById('clear-button').addEventListener('click', () => {
