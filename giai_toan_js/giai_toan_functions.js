@@ -31,12 +31,9 @@ function calculateExpansion() {
     let result = '';
     for (let k = 0; k <= n; k++) {
         const coefficient = calculateCombination(n, k);
-        result += `${coefficient} ${x}^${n-k} ${y}^${k}`;
+        result += `${coefficient} \\cdot (${x})^{${n-k}} \\cdot (${y})^{${k}}`;
         if (k < n) result += ' + ';
     }
-    const latexResult = result.replace(/C\((\d+),(\d+)\)/g, function(match, n, k) {
-        return `\\binom{${n}}{${k}}`;
-    });
-    document.getElementById('expansion-result').innerHTML = `\\[ ${latexResult} \\]`;
+    document.getElementById('expansion-result').innerHTML = `\\[ ${result} \\]`;
     renderMathInElement(document.getElementById('expansion-result'));
 }
