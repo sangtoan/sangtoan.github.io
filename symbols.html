@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LaTeX Symbols</title>
+    <!<title>LaTeX Symbols</title>>
     <style>
         body {
             display: flex;
@@ -48,6 +48,7 @@
             height: 100px;
             margin-top: 20px;
             flex-grow: 1;
+            font-size: 16px; /* Default font size */
         }
         #rendered-latex {
             border: 1px solid #ccc;
@@ -55,6 +56,15 @@
             min-height: 100px;
             margin-top: 20px;
             flex-grow: 2;
+            font-size: 16px; /* Default font size */
+        }
+        .buttons {
+            margin-top: 10px;
+        }
+        .buttons button {
+            margin-right: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
         }
         h1 {
             text-align: center;
@@ -70,6 +80,12 @@
     </div>
     <div class="right-panel">
         <textarea id="latex-code" placeholder="Enter LaTeX code here..."></textarea>
+        <div class="buttons">
+            <button id="clear-button">Xóa</button>
+            <button id="copy-button">Copy</button>
+            <button id="increase-font-button">Tăng cỡ chữ</button>
+            <button id="decrease-font-button">Giảm cỡ chữ</button>
+        </div>
         <div id="rendered-latex"></div>
     </div>
 
@@ -126,6 +142,40 @@
 
         // Update LaTeX rendering when textarea content changes
         document.getElementById('latex-code').addEventListener('input', renderLatex);
+
+        // Clear button functionality
+        document.getElementById('clear-button').addEventListener('click', () => {
+            const latexCode = document.getElementById('latex-code');
+            latexCode.value = '';
+            renderLatex();
+        });
+
+        // Copy button functionality
+        document.getElementById('copy-button').addEventListener('click', () => {
+            const latexCode = document.getElementById('latex-code');
+            latexCode.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard');
+        });
+
+        // Font size control
+        let fontSize = 16; // Default font size
+        document.getElementById('increase-font-button').addEventListener('click', () => {
+            fontSize += 2;
+            updateFontSize();
+        });
+
+        document.getElementById('decrease-font-button').addEventListener('click', () => {
+            if (fontSize > 8) { // Minimum font size
+                fontSize -= 2;
+                updateFontSize();
+            }
+        });
+
+        function updateFontSize() {
+            document.getElementById('latex-code').style.fontSize = `${fontSize}px`;
+            document.getElementById('rendered-latex').style.fontSize = `${fontSize}px`;
+        }
     </script>
 </body>
 </html>
