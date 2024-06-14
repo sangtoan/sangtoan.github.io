@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaTeX Symbols</title>
+    <style>
+        .symbol {
+            margin: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+        .symbol img {
+            display: none;
+            position: absolute;
+            border: 1px solid #ccc;
+            background: #fff;
+            padding: 5px;
+            z-index: 10;
+        }
+        #latex-code {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>LaTeX Symbols</h1>
+    <div class="symbols"></div>
+    <div id="latex-code"></div>
+
+    <script>
+        // Load JSON data
+        fetch('symbols.json')
+            .then(response => response.json())
+            .then(data => {
+                const symbolsContainer = document.querySelector('.symbols');
+
+                // Process each category in the JSON
+                for (const category in data) {
+                    if (data.hasOwnProperty(category)) {
+                        const categoryDiv = document.createElement('div');
+                        categoryDiv.innerHTML = `<h2>${category}</h2>`;
+                        symbolsContainer.appendChild(categoryDiv);
+
+                        // Process each symbol in the category
+                        for (const key in data[category]) {
+                            if (data[category].hasOwnProperty(key)) {
+                                const symbol = data[category][key];
+
+                                const span = document.createElement('span');
+                                span.className = 'symbol';
+                                span.dataset.latex = symbol.latex;
+                                span.dataset.icon = symbol.icon;
+                                span.textContent = key;
+
+                                const img = document.createElement('img');
+                                img.src = symbol.icon;
+                                span.appendChild(img);
+
+                                categoryDiv.appendChild(span);
+
+                                span.addEventListener('mouseover', () => {
+                                    img.style.display = 'block';
+                                });
+
+                                span.addEventListener('mousemove', (e) => {
+                                    img.style.top = e.pageY + 15 + 'px';
+                                    img.style.left = e.pageX + 15 + 'px';
+                                });
+
+                                span.addEventListener('mouseout', () => {
+                                    img.style.display = 'none';
+                                });
+
+                                span.addEventListener('click', () => {
+                                    const latexCode = document.getElementById('latex-code');
+                                    latexCode.textContent = `LaTeX code: ${span.dataset.latex}`;
+                                });
+                            }
+                        }
+                    }
+                }
+            })
+            .catch(error => console.error('Error loading the JSON file:', error));
+    </script>
+</body>
+</html>
