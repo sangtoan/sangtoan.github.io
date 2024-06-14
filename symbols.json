@@ -383,7 +383,7 @@
             "icon": "pic_png/NguyenHamTP5.png"
         },
         "datri2": {
-            "latex": "y=\\begin{cases}\n\t\t& f(x) \\text{ nếu } x\\geq \\ \n\t\t& g(x) \\text{ nếu } x< \n\\end{cases}",
+            "latex": "y=\\begin{cases}\n\t& f(x) \\text{ nếu } x\\geq \\\\ \n\t& g(x) \\text{ nếu } x< \n\\end{cases}",
             "icon": "pic_png/datri2.png"
         }
     },
