@@ -35,8 +35,31 @@
         }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tikzjax@1.0.0/tikzjax.min.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                packages: {'[+]': ['base', 'ams', 'amscd', 'bbox', 'boldsymbol', 'braket', 'bussproofs', 'cancel', 'color', 'colortbl', 'empheq', 'extpfeil', 'gensymb', 'html', 'mhchem', 'noerrors', 'noundefined', 'physics', 'require', 'upgreek', 'verb', 'xypic', 'tikz']},
+                tikz: {
+                    libraries: {
+                        'arrows.meta': ['arrows', 'arrows.spaced', 'arrows.meta', 'arrows.meta.spaced'],
+                        'decorations.markings': ['decorations', 'decorations.markings', 'decorations.pathmorphing', 'decorations.pathreplacing'],
+                        'patterns': ['patterns', 'patterns.meta'],
+                        'plotmarks': ['plotmarks', 'plotmarks.meta'],
+                        'positioning': ['positioning', 'positioning.meta'],
+                        'shapes': ['shapes', 'shapes.misc', 'shapes.multipart'],
+                        'shapes.arrows': ['shapes.arrows'],
+                        'shapes.callouts': ['shapes.callouts'],
+                        'shapes.gates': ['shapes.gates.logic.US', 'shapes.gates.logic.IEC'],
+                        'shapes.symbols': ['shapes.symbols'],
+                        'trees': ['trees']
+                    }
+                }
+            },
+            loader: {load: ['[tex]/tikz']}
+        };
+    </script>
 </head>
 <body>
     <h1>Render TikZ with MathJax and TikzJax</h1>
@@ -64,7 +87,7 @@
         document.getElementById('render-button').addEventListener('click', () => {
             const latexCode = document.getElementById('latex-code').value;
             const renderedLatex = document.getElementById('rendered-latex');
-            renderedLatex.innerHTML = `\\(${latexCode}\\)`;
+            renderedLatex.innerHTML = `\\[${latexCode}\\]`;
             MathJax.typesetPromise([renderedLatex]).then(() => {
                 tikzjax.render(renderedLatex.querySelectorAll("svg"));
             }).catch((err) => console.log(err.message));
