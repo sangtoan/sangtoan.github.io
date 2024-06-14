@@ -20,13 +20,17 @@ export function wordtotex() {
             questionText = questionContent.replace(solutionPattern, '').trim();
         }
 
-        // Chuyển đổi các mục a), b), ... hoặc 1), 2), ... thành \item
-        const itemPattern = /^([a-z]\.|[a-z]\)|\d\.\s|\d\)\s)/gm;
-        let formattedContent = questionText.replace(itemPattern, '\\item ');
+        // Tách nội dung câu hỏi chính và các mục a., b., c., d.
+        const parts = questionText.split(/\n(?=[a-z]\.\s)/);
+        let formattedContent = parts.shift().trim();
 
-        // Đặt \begin{enumerate} trước mục đầu tiên \item nếu có các mục này
-        if (itemPattern.test(questionText)) {
-            formattedContent = `\\begin{enumerate}\n${formattedContent}\n\\end{enumerate}`;
+        // Nếu có các mục a., b., c., d., chuyển đổi chúng thành \item
+        if (parts.length > 0) {
+            formattedContent += "\n\\begin{enumerate}";
+            parts.forEach(part => {
+                formattedContent += `\n\\item ${part.trim()}`;
+            });
+            formattedContent += "\n\\end{enumerate}";
         }
 
         let result = `%% Câu ${num}:\n\\begin{ex}\n${formattedContent}\n\\loigiai{\n${solutionText}\n}\n\\end{ex}\n`;
