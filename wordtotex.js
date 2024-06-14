@@ -21,7 +21,8 @@ export function wordtotex() {
         }
 
         // Tách nội dung câu hỏi chính và các mục a., b., c., d.
-        const parts = questionText.split(/\n(?=[a-z]\.\s)/);
+        //const parts = questionText.split(/\n(?=[a-z]\.\s)/);
+        const parts = questionText.split(/\n(?=[a-z]\.|[a-z]\)|\d+\.\s|\d+\)\s)/i);
         let formattedContent = parts.shift().trim();
 
         // Nếu có các mục a., b., c., d., chuyển đổi chúng thành \item
