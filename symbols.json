@@ -381,6 +381,10 @@
         "NguyenHamTP5": {
             "latex": "\\begin{tikzpicture}[yscale=0.5,line join = round, line cap = round, >=stealth, scale=1]\n\t\t\\def \\x{3}\n\t\t% Định nghĩa các nodes\n\t\t\\node at (0,-\\x) {0};\n\t\t\\node at (\\x,-\\x) {};\n\t\t\\node at (2*\\x,-\\x) {2};\n\t\t\\node at (0,0) {1};\n\t\t\\node at (\\x,0) {-};\n\t\t\\node at (2*\\x,0) {3};\n\t\t\\node at (0,\\x) {4};\n\t\t\\node at (\\x,\\x) {};\n\t\t\\node at (2*\\x,\\x) {6};\n\t\t\\node at (0,2*\\x) {7};\n\t\t\\node at (\\x,2*\\x) {+};\n\t\t\\node at (2*\\x,2*\\x) {9};\n\t\t\\node at (0,3*\\x) {Đạo Hàm};\n\t\t\\node at (\\x,3*\\x) {Dấu};\n\t\t\\node at (2*\\x,3*\\x) {Nguyên hàm};\n\t\t\\foreach \\i in {0,1,2}{\n\t\t\\foreach \\j in {-1,0,1,2,3}{\n\t\t\t\\draw[rounded corners,teal] (\\i*\\x-\\x/2, \\j*\\x-\\x/2) rectangle ++(\\x,\\x);\n\t\t}}\n\t\\draw[->,teal] (0.5*\\x,2*\\x) to[out=45,in=-135] (1.5*\\x,1*\\x);\n\t\\draw[->,teal] (0.5*\\x,1*\\x-\\x/3)--(1.5*\\x,1*\\x-\\x/3)node[midway,above]{\\tiny Chuyển mẫu sang phải};\n\t\\draw[->,teal] (0.5*\\x,0)to[out=45,in=-135] (1.5*\\x,-\\x);\n\t\\end{tikzpicture} ",
             "icon": "pic_png/NguyenHamTP5.png"
+        },
+        "datri2": {
+            "latex": "y=\begin{cases}\n\t& f(x) \text{ nếu } x= \\ \n\t& g(x) \text{ nếu } x= \n\end{cases}",
+            "icon": "pic_png/datri2.png"
         }
     },
     "Môi Trường": {
