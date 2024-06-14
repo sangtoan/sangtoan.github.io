@@ -1,7 +1,7 @@
 import { convertNumberToMathMode } from './numberUtils.js';
 import { replaceTextWithJson } from './replaceUtils.js';
 
-export function wordtotex() {
+export function word2tex() {
     let inputCode = document.getElementById('inputCode').value;
     let outputCode = "";
     let errors = [];
