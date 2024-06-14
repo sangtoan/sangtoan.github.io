@@ -3,7 +3,6 @@ import { replaceTextWithJson } from './replaceUtils.js';
 
 export function wordtotex() {
     let inputCode = document.getElementById('inputCode').value;
-    let useChoice = document.getElementById('useChoice').checked; // Kiểm tra trạng thái của checkbox
     let outputCode = "";
     let errors = [];
 
@@ -21,17 +20,17 @@ export function wordtotex() {
             questionText = questionContent.replace(solutionPattern, '').trim();
         }
 
-        // Chuyển đổi các mục a., a), 1., 1) thành \item
-        const itemPattern = /^([a-z]\.|[a-z]\)|\d\.\s|\d\)\s)/gim;
-        let formattedContent = questionText.replace(itemPattern, '\\item ');
+        // Tách nội dung câu hỏi chính và các mục a., b., c., d.
+        const parts = questionText.split(/\n(?=[a-z]\.\s)/);
+        let formattedContent = parts.shift().trim();
 
-        // Thay đổi \item và \begin{enumerate} nếu checkbox được chọn
-        const itemTag = useChoice ? '\\itemchoice' : '\\item';
-        const enumTag = useChoice ? '\\begin{enumchoice}' : '\\begin{enumerate}';
-        const endEnumTag = useChoice ? '\\end{enumchoice}' : '\\end{enumerate}';
-
-        if (itemPattern.test(questionText)) {
-            formattedContent = `${enumTag}\n${formattedContent.replace(/\\item/g, itemTag)}\n${endEnumTag}`;
+        // Nếu có các mục a., b., c., d., chuyển đổi chúng thành \item
+        if (parts.length > 0) {
+            formattedContent += "\n\\begin{enumerate}";
+            parts.forEach(part => {
+                formattedContent += `\n\\item ${part.trim()}`;
+            });
+            formattedContent += "\n\\end{enumerate}";
         }
 
         let result = `%% Câu ${num}:\n\\begin{ex}\n${formattedContent}\n\\loigiai{\n${solutionText}\n}\n\\end{ex}\n`;
