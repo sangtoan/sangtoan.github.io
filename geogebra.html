@@ -41,15 +41,61 @@
             height: calc(100% - 50px); /* Adjust height to fit below the menu */
             margin-top: 50px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
         }
         iframe {
             width: 100%;
-            height: 100%;
+            height: 80%;
             border: none;
         }
+        .latex-output {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            border-top: 1px solid #ccc;
+            text-align: center;
+        }
+        #latex-display {
+            font-size: 24px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const iframe = document.getElementById('geogebra-iframe');
+            const latexDisplay = document.getElementById('latex-display');
+
+            iframe.onload = function() {
+                const ggbApplet = iframe.contentWindow.ggbApplet;
+                if (ggbApplet) {
+                    ggbApplet.registerAddListener(updateLatex);
+                    ggbApplet.registerRemoveListener(updateLatex);
+                    ggbApplet.registerRenameListener(updateLatex);
+
+                    function updateLatex() {
+                        const allLabels = ggbApplet.getAllObjectNames();
+                        let latexStrings = allLabels.map(label => {
+                            const type = ggbApplet.getObjectType(label);
+                            if (type === "function" || type === "line" || type === "conic") {
+                                const value = ggbApplet.getLaTeXString(label);
+                                return value ? `\\(${value}\\)` : '';
+                            }
+                            return '';
+                        }).filter(Boolean).join('<br>');
+
+                        latexDisplay.innerHTML = latexStrings;
+                        MathJax.typesetPromise([latexDisplay]);
+                    }
+                } else {
+                    console.error("GeoGebra applet not found!");
+                }
+            }
+        });
+    </script>
 </head>
 <body>
     <div class="menu">
@@ -62,9 +108,13 @@
         <a href="menu_tree.html">Menu ID</a>
         <a href="note.html">Ghi Chú</a>
         <a href="symbols.html">Symbols</a>
+        <a href="geogebra.html">GeoGebra</a>
     </div>
     <div class="content">
-        <iframe scrolling="no" src="https://www.geogebra.org/calculator"></iframe>
+        <iframe id="geogebra-iframe" scrolling="no" src="https://www.geogebra.org/calculator"></iframe>
+        <div class="latex-output">
+            <div id="latex-display"></div>
+        </div>
     </div>
 </body>
 </html>
