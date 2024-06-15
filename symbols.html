@@ -11,36 +11,30 @@
             margin: 0;
             font-family: Arial, sans-serif;
         }
-        .navbar {
+        .menu {
             width: 100%;
-            background-color: #333;
+            background-color: #007bff;
             overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
-        .navbar a {
+        .menu a, .submenu .subnavbtn {
             float: left;
             display: block;
-            color: #f2f2f2;
+            color: white;
             text-align: center;
             padding: 14px 16px;
             text-decoration: none;
         }
-        .navbar a:hover, .submenu:hover .subnavbtn {
-            background-color: #555;
-            color: white;
+        .menu a:hover, .submenu:hover .subnavbtn {
+            background-color: #ddd;
+            color: black;
         }
         .submenu {
             float: left;
             overflow: hidden;
-        }
-        .submenu .subnavbtn {
-            font-size: 16px;
-            border: none;
-            outline: none;
-            color: white;
-            padding: 14px 16px;
-            background-color: inherit;
-            font-family: inherit;
-            margin: 0;
         }
         .submenu-content {
             display: none;
@@ -70,12 +64,14 @@
             padding: 10px;
             border-right: 1px solid #ccc;
             overflow-y: auto;
+            margin-top: 50px; /* Add margin-top to avoid overlapping with menu */
         }
         .right-panel {
             width: 50%;
             padding: 10px;
             display: flex;
             flex-direction: column;
+            margin-top: 50px; /* Add margin-top to avoid overlapping with menu */
         }
         .symbol {
             margin: 5px;
@@ -133,14 +129,24 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
-    <div class="navbar">
+    <div class="menu">
         <a href="index.html">Home</a>
+        <a href="contact.html">Tác giả</a>
+        <a href="tron_de.html">Trộn Đề</a>
+        <a href="fixcode.html">Fix Code</a>
+        <a href="find_latex.html">Tìm Kiếm</a>
+        <a href="Ve_hinh.html">Vẽ Hình</a>
+        <a href="tuong_tu.html">Đề Tương Tự</a>
+        <a href="menu_tree.html">Menu ID</a>
+        <a href="note.html">Ghi Chú</a>
+        <a href="symbols.html">Symbols</a>
         <div class="submenu">
             <button class="subnavbtn">Symbols <i class="fa fa-caret-down"></i></button>
             <div class="submenu-content">
+                <a href="symbols.html">LaTeX Symbols</a>
                 <a href="geogebra.html">GeoGebra</a>
             </div>
-        </div> 
+        </div>
     </div>
     <div class="left-panel">
         <h1>LaTeX Symbols</h1>
