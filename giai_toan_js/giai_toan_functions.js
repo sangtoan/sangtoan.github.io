@@ -14,26 +14,20 @@ function calculatePower() {
     document.getElementById('result').innerText = result.toString();
 }
 
-function calculateCombination(n, k) {
-    if (k > n) return 0;
-    if (k === 0 || k === n) return 1;
-    let result = 1;
-    for (let i = 1; i <= k; i++) {
-        result *= (n - i + 1) / i;
-    }
-    return result;
-}
-
 function calculateExpansion() {
-    const n = parseInt(document.getElementById('n').value);
-    const x = document.getElementById('x').value;
-    const y = document.getElementById('y').value;
-    let result = '';
-    for (let k = 0; k <= n; k++) {
-        const coefficient = calculateCombination(n, k);
-        result += `${coefficient} \\cdot (${x})^{${n-k}} \\cdot (${y})^{${k}}`;
-        if (k < n) result += ' + ';
+    const polynomial = document.getElementById('polynomial').value;
+    let expanded;
+    try {
+        expanded = math.simplify(polynomial).toString();
+    } catch (error) {
+        document.getElementById('rendered-result').innerHTML = 'Lỗi khi khai triển đa thức: ' + error.message;
+        return;
     }
-    document.getElementById('expansion-result').innerHTML = `\\[ ${result} \\]`;
-    renderMathInElement(document.getElementById('expansion-result'));
+
+    const latex = math.parse(expanded).toTex();
+
+    document.getElementById('rendered-result').innerHTML = `\\[ ${latex} \\]`;
+    document.getElementById('latex-code').innerText = latex;
+
+    renderMathInElement(document.getElementById('rendered-result'));
 }
