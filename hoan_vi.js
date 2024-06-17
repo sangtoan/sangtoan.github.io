@@ -29,7 +29,12 @@ function hoanViCacNgoacLon(noiDung) {
     if (cacVitriNgoacLon.length === 4) {
         let cacNgoacLonGoc = cacVitriNgoacLon.map(([dau, cuoi]) => noiDung.slice(dau, cuoi + 1));
         let cacNgoacLonHoanVi = [...cacNgoacLonGoc];
-        cacNgoacLonHoanVi.sort(() => Math.random() - 0.5);
+
+        // Phương pháp hoán vị mạnh hơn
+        for (let i = cacNgoacLonHoanVi.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [cacNgoacLonHoanVi[i], cacNgoacLonHoanVi[j]] = [cacNgoacLonHoanVi[j], cacNgoacLonHoanVi[i]];
+        }
 
         cacNgoacLonGoc.forEach((goc, index) => {
             noiDung = noiDung.replace(goc, cacNgoacLonHoanVi[index]);
