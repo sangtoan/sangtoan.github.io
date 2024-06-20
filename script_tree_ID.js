@@ -109,7 +109,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     const fileLi = document.createElement('li');
                     fileLi.className = 'file';
                     fileLi.textContent = file.id; // Hiển thị ID không có dấu gạch nối
-                    fileLi.addEventListener('click', () => {
+                    fileLi.addEventListener('click', (event) => {
+                        event.stopPropagation(); // Ngăn sự kiện click lan lên phần tử cha
                         displayFileContent(file);
                     });
                     container.appendChild(fileLi);
