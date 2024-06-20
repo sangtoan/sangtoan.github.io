@@ -9,9 +9,6 @@
             margin: 0;
             font-family: Arial, sans-serif;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             height: 100vh;
             background-image: url('background.jpg');
             background-size: cover;
@@ -39,14 +36,15 @@
         }
         #note-container {
             display: flex;
+            flex: 8;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             background: rgba(255, 255, 255, 0.8);
             padding: 20px;
             border-radius: 10px;
-            margin-top: 50px;
-            width: 90%;
-            max-width: 1000px;
+            margin: 50px auto 20px auto;
+            height: calc(100vh - 70px);
         }
         #note-container textarea {
             width: 100%;
@@ -76,61 +74,169 @@
         #note-container button:hover {
             background-color: #0056b3;
         }
+        #note-list {
+            flex: 2;
+            margin: 70px 20px 20px 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-y: auto;
+        }
+        #note-list ul {
+    list-style-type: none;
+    padding-left: 0; /* Căn sát lề trái */
+}
+#note-list li {
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%; /* Tăng chiều ngang */
+    box-sizing: border-box; /* Đảm bảo padding không làm thay đổi kích thước */
+    white-space: nowrap; /* Không xuống dòng */
+    overflow: hidden; /* Ẩn nội dung tràn */
+    text-overflow: ellipsis; /* Thêm dấu "..." cho nội dung tràn */
+}
+
+        .note-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .note-actions button {
+            padding: 5px 10px;
+            font-size: 12px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .note-actions button.edit {
+            background-color: #28a745;
+        }
+        .note-actions button:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
     <div class="menu">
-        <a href="index.html">Home</a>        
+        <a href="index.html">Home</a>
         <a href="tron_de.html">Trộn Đề</a>
-        <a href="fixcode.html">Fix Code</a>
-        <a href="find_latex.html">Tìm Kiếm</a>
-        <a href="Ve_hinh.html">Vẽ Hình</a>
-        <a href="tuong_tu.html">Đề Tương Tự</a>
-        <a href="menu_tree.html">Menu ID</a>
         <a href="note.html">Ghi Chú</a>
-        <a href="symbols.html">symbols</a>
-        <a href="contact.html">Tác giả</a>
     </div>
 
-    <div id="note-container">
-        <textarea id="note" placeholder="Ghi chú của bạn..."></textarea>
-        <div class="button-container">
-            <button onclick="saveNote()">Lưu Ghi Chú</button>
-            <button onclick="clearNote()">Xóa Ghi Chú</button>
+    <div style="display: flex; width: 100%; height: 100%;">
+        <div id="note-list"></div>
+
+        <div id="note-container">
+            <textarea id="note" placeholder="Ghi chú của bạn..."></textarea>
+            <div class="button-container">
+                <button onclick="saveNote()">Lưu Ghi Chú</button>
+                <button onclick="clearNote()">Xóa Ghi Chú</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Temporarily disable the login functionality
-        // const correctPassword = "sangnhc"; // Thay "yourpassword" bằng mật khẩu bạn muốn
+        let editingNoteIndex = null;
 
         document.addEventListener('DOMContentLoaded', (event) => {
-            // document.getElementById('login-container').style.display = 'flex';
-            document.getElementById('note-container').style.display = 'flex';
-            document.getElementById('note').value = localStorage.getItem('note') || '';
+            loadNotes();
         });
 
-        // function checkPassword() {
-        //     const password = document.getElementById('password').value;
-        //     if (password === correctPassword) {
-        //         document.getElementById('login-container').style.display = 'none';
-        //         document.getElementById('note-container').style.display = 'flex';
-        //         document.getElementById('note').value = localStorage.getItem('note') || '';
-        //     } else {
-        //         alert('Mật khẩu không đúng!');
-        //     }
-        // }
-
         function saveNote() {
-            const note = document.getElementById('note').value;
-            localStorage.setItem('note', note);
+            const noteContent = document.getElementById('note').value;
+            if (!noteContent.trim()) {
+                alert('Ghi chú không được để trống!');
+                return;
+            }
+            const noteTitle = noteContent.split('\n')[0].trim();
+            const timestamp = new Date();
+            const time = `${String(timestamp.getFullYear()).slice(-2)}.${String(timestamp.getMonth() + 1).padStart(2, '0')}.${String(timestamp.getDate()).padStart(2, '0')}-${timestamp.toTimeString().split(' ')[0]}`;
+            const noteData = { title: noteTitle, content: noteContent, time: time };
+
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            
+            if (!Array.isArray(notes)) {
+                notes = [];
+            }
+
+            if (editingNoteIndex !== null) {
+                notes[editingNoteIndex] = noteData;
+                editingNoteIndex = null;
+            } else {
+                notes.push(noteData);
+            }
+
+            localStorage.setItem('notes', JSON.stringify(notes));
             alert('Ghi chú đã được lưu!');
+            document.getElementById('note').value = '';
+            loadNotes();
+        }
+
+        function loadNotes() {
+            const noteList = document.getElementById('note-list');
+            noteList.innerHTML = '';
+            const notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+            if (!Array.isArray(notes)) {
+                notes = [];
+            }
+
+            const ul = document.createElement('ul');
+            notes.forEach((note, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${note.time} - ${note.title}`;
+                li.onclick = () => showNoteContent(note);
+
+                const actions = document.createElement('div');
+                actions.classList.add('note-actions');
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Chỉnh sửa';
+                editButton.classList.add('edit');
+                editButton.onclick = (e) => {
+                    e.stopPropagation();
+                    editNoteContent(index, note);
+                };
+                actions.appendChild(editButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Xóa';
+                deleteButton.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteNoteContent(index);
+                };
+                actions.appendChild(deleteButton);
+
+                li.appendChild(actions);
+                ul.appendChild(li);
+            });
+            noteList.appendChild(ul);
+        }
+
+        function showNoteContent(note) {
+            document.getElementById('note').value = note.content;
+        }
+
+        function editNoteContent(index, note) {
+            document.getElementById('note').value = note.content;
+            editingNoteIndex = index;
+        }
+
+        function deleteNoteContent(index) {
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            notes.splice(index, 1);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            loadNotes();
         }
 
         function clearNote() {
             document.getElementById('note').value = '';
-            localStorage.removeItem('note');
-            alert('Ghi chú đã được xóa!');
+            editingNoteIndex = null;
         }
     </script>
 </body>
